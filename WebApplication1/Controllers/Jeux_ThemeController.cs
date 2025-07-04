@@ -3,19 +3,21 @@ using Npgsql;
 using Dapper;
 using WebApplication1.Models;
 
+
+
 namespace WebApplication1.Controllers
 {
-    public class CommentairesController : Controller
+    public class Jeux_ThemeController : Controller
     {
         public IActionResult Index()
         {
-            string query = "Select * from commentaires";
-            List<Commentaire> Commentaires;
+            string query = "Select * from jeux_theme";
+            List<Jeux_Type> Jeux_Types;
             using (var connexion = new NpgsqlConnection(_connexionString))
             {
-                Commentaires = connexion.Query<Commentaire>(query).ToList();
+                Jeux_Types = connexion.Query<Jeux_Type>(query).ToList();
             }
-            return View(Commentaires);
+            return View(Jeux_Types);
         }
         // attribut stockant la chaîne de connexion à la base de données
         private readonly string _connexionString;
@@ -24,7 +26,7 @@ namespace WebApplication1.Controllers
         /// </summary>
         /// <param name="configuration">configuration de l'application</param>
         /// <exception cref="Exception"></exception>
-        public CommentairesController(IConfiguration configuration)
+        public Jeux_ThemeController(IConfiguration configuration)
         {
             // récupération de la chaîne de connexion dans la configuration
             _connexionString = configuration.GetConnectionString("GestionBibliotheque")!;
@@ -34,6 +36,5 @@ namespace WebApplication1.Controllers
                 throw new Exception("Error : Connexion string not found ! ");
             }
         }
-
     }
 }

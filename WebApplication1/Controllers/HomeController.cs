@@ -1,25 +1,58 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Npgsql;
 using WebApplication1.Models;
+using Dapper;
+using Microsoft.Extensions.Configuration;
 
 namespace WebApplication1.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        // attribut stockant la chaîne de connexion à la base de données
+        private readonly string _connexionString;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IConfiguration configuration)
         {
-            _logger = logger;
+            // récupération de la chaîne de connexion dans la configuration
+            _connexionString = configuration.GetConnectionString("GestionBibliotheque")!;
+            // si la chaîne de connexionn'a pas été trouvé => déclenche une exception => code http 500 retourné
+            if (_connexionString == null)
+            {
+                throw new Exception("Error : Connexion string not found ! ");
+            }
         }
         public IActionResult Index()
         {
 
-            return View();
+            string query = "select * from JEUX where jeuid=1 or jeuid=2 or jeuid=3 or jeuid=4 ;";
+            List<Jeux> Jeux;
+            try
+            {
+                using (var connexion = new NpgsqlConnection(_connexionString))
+                {
+                    Jeux = connexion.Query<Jeux>(query).ToList();
+                }
+                return View(Jeux);
+            }
+            catch
+            {
+                return NotFound();
+            }
 
         }
 
+
         public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        public IActionResult Contact()
+        {
+            return View();
+        }
+        public IActionResult Cookie()
         {
             return View();
         }

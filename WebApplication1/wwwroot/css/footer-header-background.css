@@ -1,0 +1,67 @@
+﻿* {
+    margin: 0;
+    padding: 0;
+}
+
+
+
+body {
+    background-image: url(../img/site/Img-Boutique.jpg);
+    background-size: 100% 100vh;
+    background-repeat: no-repeat;
+    z-index: -1;
+    box-sizing: border-box;
+}
+
+
+
+footer {
+    background-color: rgb(255, 255, 255, 0.7);
+    position: fixed;
+    bottom: 0;
+    width: 100vw;
+    height: 5vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+a {
+    text-decoration: none;
+    color: black;
+}
+header {
+    background-color: rgb(255, 255, 255, 0.7);
+    position: fixed;
+    top: 0;
+    width: 100vw;
+    height: 10vh;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+header h1{
+margin-top:7%;
+
+
+}
+
+#logo {
+    height: 10vh;
+}
+
+h1 {
+    padding: 5%;
+    text-align: center;
+}
+
+@media (min-width: 600px) {
+
+    h1 {
+        padding: 0;
+    }
+    footer {
+        justify-content: right;
+    }
+}

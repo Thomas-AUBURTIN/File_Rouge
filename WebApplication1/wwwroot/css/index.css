@@ -1,0 +1,160 @@
+﻿h1 {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    margin-bottom: 8%;
+}
+/* debut carouselle*/
+aside ul li img {
+    height: 17vh;
+}
+
+aside ul li {
+    display: contents;
+    list-style-type: none;
+    flex: 0 0 100%;
+}
+
+aside ul {
+    display: flex;
+    width: 17vw;
+    height: 100%;
+    padding: 0;
+    display: flex;
+}
+
+/*fun carrouselle */
+
+#contain-nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    align-items: center;
+    gap: 1vh;
+    margin-right: 2vh;
+}
+
+    #contain-nav a {
+        text-decoration: none;
+        color: black;
+    }
+
+
+main {
+    position: fixed;
+    top: 15vh;
+    width: 100vw;
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    gap: 1vh;
+}
+
+form h2,
+form div,
+form p {
+    text-align: center;
+}
+
+#se_loguer,
+#top {
+    background-color: rgb(255, 255, 255, 0.7);
+    width: 60%;
+    border: 2px solid rgb(255, 255, 255);
+    border-radius: 10px;
+}
+
+#se_loguer {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+[type] {
+    border-radius: 10px;
+    width: 70%;
+    margin-left: 15%;
+}
+
+#top {
+    width: 60vw;
+    height: 30vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+    #top h2 {
+        margin: 0%;
+    }
+
+.fleche-droite {
+    position: absolute;
+    right: 22%;
+    top: 70%;
+    width: 1.5em;
+}
+
+.fleche-gauche {
+    position: absolute;
+    left: 22%;
+    top: 70%;
+    width: 1.5em;
+}
+
+#eye {
+    width: 10%;
+    height: 80%;
+}
+
+#div-eye {
+    display: flex;
+    align-items: center;
+}
+.slide{
+    position :relative;
+    height:9em;
+    width:21em;
+    
+
+}
+
+.container-slide{
+    display: flex;
+    justify-content:center;
+    align-items: center;
+
+
+}
+@media (min-width: 600px) {
+    #se_loguer {
+        width: 30%;
+    }
+
+    #top {
+        width: 25%;
+    }
+
+    .fleche-droite {
+        right: 38%;
+        width: 3em;
+        top: 70%;
+    }
+
+    .fleche-gauche {
+        left: 38%;
+        width: 3em;
+        top: 70%;
+    }
+
+    h1 {
+        padding: 0;
+    }
+
+    footer {
+        justify-content: right;
+    }
+}
