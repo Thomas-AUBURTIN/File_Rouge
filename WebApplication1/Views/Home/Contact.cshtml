@@ -2,4 +2,53 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
+	<div class="contact">
+		<form>
+			<div class="left">
+
+				<label class="padding" for="prenom">Prenom :</label>
+				<input type="text" name="prenom" value="" id="Prenom" placeholder="prenom" />
+
+
+				<label class="padding"  for="Nom">Nom :</label>
+				<input type="text" name="Nom" value="" id="Nom" placeholder="nom" />
+
+
+				<label class="padding" for="telephone">telephone :</label>
+				<input type="tel" name="Telephone" id="Telephone" value="" placeholder="0612345678" />
+
+
+				<label class="padding" for="email">Email :</label>
+				<input type="email" name="email" value="" id="email" placeholder="exemple@gmail.com" />
+
+			</div>
+			<div class="center">
+				<div>
+					<input type="text" name="sujet" value="" placeholder="Sujet"/>
+					<select name="theme" id="theme">
+						<option value="">--Choisir un sujet--</option>
+						<option value="reservation">reservation</option>
+						<option value="jeu">demande de jeu</option>
+						<option value="objet">objet perdu</option>
+						<option value="Reclamation">Reclamation</option>
+						<option value="autres">autres</option>
+					</select>
+				</div>
+				<textarea name="texte" id="texte" placeholder="mon message"></textarea>
+				<input type="submit" name="submit" value="Envoyer" />
+			</div>
+
+		</form>
+		<button><a asp-controller="Home" asp-action="index">retour</a></button>
+	</div>
+	<script src="../js/insc.js" defer></script>
+
+
+
+
+
+
+
+
+
 }

@@ -1,35 +1,38 @@
 ﻿@model List<Jeux>
 @{
-    ViewData["Title"] = "Login";
+	ViewData["Title"] = "Login";
 }
-<link rel="stylesheet" href="./css/index.css">
-<script src="./js/slide.js" defer></script>
-<form action="" id="se_loguer">
-    <h2>BIENVENUE</h2>
+<div class="index">
+	<script src="./js/slide.js" defer></script>
+	<script src="./js/insc.js" defer></script>
+	<form action="" id="se_loguer">
+		<label for="login">Pseudo :</label>
+		<div class="div-eye">
+			<input type="text" name="login" id="login">
+		</div>
+		<br>
 
-    <label for="login">Pseudo :</label>
-    <input type="text" name="login" id="login">
-    <label for="psw">Mot de passe :</label>
-    <div id="div-eye">
-        <input type="password" name="psw" id="psw">
-        <img src="./img/site/oeil.png" alt="" id="eye">
-    </div>
+		<label for="psw">Mot de passe :</label>
+		<div class="div-eye">
+			<input type="password" name="psw" id="psw">
+			<img src="./img/site/oeil.png" alt="" id="eye">
+		</div>
 
-    <hr>
-    <p>ou <a href="./html/inscription.html">s'inscrire</a></p>
+		<hr>
+		<p>ou <a asp-controller="Home" asp-action="Inscription">s'inscrire</a></p>
 
-</form>
+	</form>
 
-<aside id="top">
-    <h1>jeu au top</h1>
-    <div class="container-slide">
-        @foreach (var jeux in @Model!)
-        {
-                <img class="slide" src="/img/jeu/@(jeux.image)">
-        }
-        </div>
-    <button class="fleche-gauche" onclick="plusDivs(-1)">&#10094;</button>
-    <button class="fleche-droite" onclick="plusDivs(+1)">&#10095;</button>
-</aside>
-
+	<aside id="top">
+		<h2>jeu au top</h2>
+		<div class="white container-slide">
+			@foreach (var jeux in @Model!)
+			{
+				<img class="slide" src="/img/jeu/@(jeux.image)">
+			}
+		</div>
+		<button class="fleche-gauche" onclick="plusDivs(-1)">&#10094;</button>
+		<button class="fleche-droite" onclick="plusDivs(+1)">&#10095;</button>
+	</aside>
+</div>
 

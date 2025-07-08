@@ -6,8 +6,9 @@
 
 
 body {
-    background-image: url(../img/site/Img-Boutique.jpg);
+    
     background-size: 100% 100vh;
+    background-image: url('../img/site/img-boutique.jpg');
     background-repeat: no-repeat;
     z-index: -1;
     box-sizing: border-box;
@@ -21,10 +22,23 @@ footer {
     bottom: 0;
     width: 100vw;
     height: 5vh;
-    display: flex;
-    justify-content: center;
+    display:flex;
+    justify-content:end;
     align-items: center;
+    padding-right:2em;
+
 }
+main {
+    position: fixed;
+    top: 10vh;
+    left: 0;
+    width: 100vw;
+    height: 85vh;
+
+}
+
+
+
 
 
 a {
@@ -41,11 +55,7 @@ header {
     justify-content: space-around;
     align-items: center;
 }
-header h1{
-margin-top:7%;
 
-
-}
 
 #logo {
     height: 10vh;
@@ -62,6 +72,6 @@ h1 {
         padding: 0;
     }
     footer {
-        justify-content: right;
+        justify-content: end;
     }
 }

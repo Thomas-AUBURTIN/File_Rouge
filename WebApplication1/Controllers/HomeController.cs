@@ -9,7 +9,7 @@ namespace WebApplication1.Controllers
 {
     public class HomeController : Controller
     {
-        // attribut stockant la chaîne de connexion à la base de données
+        //// attribut stockant la chaîne de connexion à la base de données
         private readonly string _connexionString;
 
         public HomeController(IConfiguration configuration)
@@ -52,8 +52,36 @@ namespace WebApplication1.Controllers
         {
             return View();
         }
-        public IActionResult Cookie()
+        public IActionResult Legal()
         {
+            return View();
+        }
+        public IActionResult Inscription()
+        {
+            return View();
+        }
+
+        public IActionResult Home()
+        {
+            ViewData["page"] = "index";
+            return View();
+        }
+
+        public IActionResult Catalogue()
+        {
+            ViewData["page"] = "others";
+            return View();
+        }
+
+        public IActionResult Gestion()
+        {
+            ViewData["page"] = "others";
+            return View();
+        }
+
+        public IActionResult Reservation()
+        {
+            ViewData["page"] = "others";
             return View();
         }
 

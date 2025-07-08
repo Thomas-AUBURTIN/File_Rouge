@@ -1,0 +1,55 @@
+﻿* {
+    margin: 0;
+    padding: 0;
+}
+
+
+
+body {
+
+}
+
+header {
+    position: fixed;
+    top: 0;
+    width: 100vw;
+    height: 40vh;
+    display: flex;
+    flex-direction: column;
+}
+.top-header {
+    position: fixed;
+    top: 0;
+    width: 100vw;
+    height: 10vh;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    padding-right: 2em;
+    border: 2px solid blue;
+}
+.presentation {
+    position: relative;
+    top: 10vh;
+    width: 100vw;
+    height: 10vh;
+    display: grid;
+grid-template-columns:1fr 1fr;
+grid-template-rows: 
+    padding-right: 2em;
+    border: 2px solid orange;
+}
+#logo {
+    height: 10vh;
+}
+footer {
+    background-color: rgb(255, 255, 255, 0.7);
+    position: fixed;
+    bottom: 0;
+    width: 100vw;
+    height: 5vh;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    padding-right: 2em;
+}

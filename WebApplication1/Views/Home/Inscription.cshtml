@@ -1,0 +1,32 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    <div class="inscription">
+        <form action="">
+            <label for="pseudo">pseudo : </label>
+            <input type="text" name="pseudo" id="pseudo">
+            <label for="pp"><img src="/img/site/upload.png" alt="">  photo de profil : </label>
+            <input type="file" name="pp" id="pp" accept="image/png, image/jpeg">
+            <img src="/img/site/image-profil-base.png" id="img-profil" alt="">
+            <label for="tel">telephone : </label>
+            <input type="tel" name="tel" id="tel">
+            <label for="email">Email : </label>
+            <input type="email" name="email" id="email">
+            <label for="psw">mot de passe : </label>
+            <div id="div-eye">
+                <input type="password" name="psw" id="psw">
+                <img src="../img/site/oeil.png" alt="" id="eye">
+            </div>
+
+            <input type="submit">
+        </form>
+        <button><a asp-controller="Home" asp-action="index">retour</a></button>
+    </div>
+
+
+
+
+
+
+}
