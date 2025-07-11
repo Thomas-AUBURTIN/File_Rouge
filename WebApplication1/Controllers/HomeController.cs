@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace WebApplication1.Controllers
 {
+    //ceci est un test git hub
     public class HomeController : Controller
     {
         //// attribut stockant la chaîne de connexion à la base de données
