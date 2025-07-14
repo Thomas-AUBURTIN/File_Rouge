@@ -9,5 +9,6 @@
         public string? Telephone { get; set; }
         public DateTime? dateInscription { get; set; }
         public bool? administrateur { get; set; }
+        
     }
 }

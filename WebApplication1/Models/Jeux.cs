@@ -10,6 +10,12 @@
         public double? tempsdejeumoyen { get; set; }
         public DateTime? dateajout { get; set; }
 
+        public List<Theme> themes { get; set; }  = new List<Theme>();
+        public List<TypeJeux> types { get; set; } = new List<TypeJeux>();
+        public List<Commentaire> commentaires { get; set; } = new List<Commentaire>();
+      
+
+
 
     }
 }
