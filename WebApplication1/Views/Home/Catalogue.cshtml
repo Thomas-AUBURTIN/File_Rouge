@@ -6,27 +6,60 @@
 	}
 	@{
 		int max = (int)ViewData["i"] + 5;
+		int avant = (int)ViewData["i"] - 5;
+		int apres = (int)ViewData["i"] + 6;
 		int depart = (int)ViewData["i"];
 		List<Jeux> Jeux = Model;
 		Jeux.Sort((a, b) => a.titre.CompareTo(b.titre));
 	}
-	<div classe="liste-jeux">
+	<form action="/" method="post">
+		<label for=""></label>
+	<input type="radio" name="trie" value="" />	
+	
+	
+	</form>
+
+
+	<div class="liste-jeux">
 		@for (var i = depart; i < max; i++)
 		{
-			<div class="game">
-				<p class="titre">@Jeux[i].titre</p>
-				<img class="image" src="~/img/jeu/@Jeux[i].image" alt="Alternate Text" />
-				<p>Description</p>
-				<p class="description">@Jeux[i].description</p>
-			</div>
+			try
+			{
+				<div class="game">
+					<p class="titre">@Jeux[i].titre</p>
+					<img class="image" src="~/img/jeu/@Jeux[i].image" alt="Alternate Text" />
+					<p>Description</p>
+					<p class="description">@Jeux[i].description</p>
+					<a asp-controller="Home" asp-action="Detail" asp-route-id=></a>
+				</div>
+			}
+			catch { }
 
-			
 		}
-		@if(max<=)
-		<button><a asp-controller="Home" asp-action="Catalogue" asp-route-i=@max>suite</a></button>
+		<div class="bar-button">
+		@if (avant >= 1)
+		{
+			<button><a asp-controller="Home" asp-action="Catalogue" asp-route-i=@avant>avant</a></button>
+		}
+		else
+		{
+			<button>suite</button>
+		}
 
-		
+		@if (max <= @Jeux.Count)
+		{
+			<button><a asp-controller="Home" asp-action="Catalogue" asp-route-i=@apres>avant</a></button>
+		}
+		else
+		{
+			<button>avant</button>
+		}
+		</div>
+
 	</div>
+</div>
+
+
 
 
 
