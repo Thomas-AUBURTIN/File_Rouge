@@ -12,11 +12,19 @@
 		List<Jeux> Jeux = Model;
 		Jeux.Sort((a, b) => a.titre.CompareTo(b.titre));
 	}
-	<form action="/" method="post">
-		<label for=""></label>
-	<input type="radio" name="trie" value="" />	
+	<form asp-controller="Home" asp-action="Catalogue"  method="get">
+		@* <label for=""></label>
+	<input type="radio" name="trie" value="" />	 *@
+	<input type="hidden" name="sort" value="nom" />
+	<input type="submit" value="tri par nom" />
 	
-	
+	</form>
+	<form asp-controller="Home" asp-action="Catalogue" method="get">
+		@* <label for=""></label>
+	<input type="radio" name="trie" value="" />	 *@
+		<input type="hidden" name="sort" value="auteur" />
+		<input type="submit" value="tri par auteurs" />
+
 	</form>
 
 
@@ -43,16 +51,16 @@
 		}
 		else
 		{
-			<button>suite</button>
+			<button>avant</button>
 		}
 
-		@if (max <= @Jeux.Count)
+		@if (max <= Math.Round(@Jeux.Count/5.0,1)*5)
 		{
-			<button><a asp-controller="Home" asp-action="Catalogue" asp-route-i=@apres>avant</a></button>
+			<button><a asp-controller="Home" asp-action="Catalogue" asp-route-i=@apres>suite</a></button>
 		}
 		else
 		{
-			<button>avant</button>
+			<button>suite</button>
 		}
 		</div>
 

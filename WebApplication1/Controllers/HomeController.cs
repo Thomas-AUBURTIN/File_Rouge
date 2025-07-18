@@ -64,36 +64,37 @@ namespace WebApplication1.Controllers
 
         public IActionResult Home()
         {
-            
+
             return View();
         }
 
-        public IActionResult Catalogue(int i)
+        public IActionResult Catalogue(int i, string sort)
         {
+
+            string query = "select J.titre,J.DESCRIPTION,J.IMAGE from jeux J ";
+            List<Jeux> Jeux;
+            using (var connexion = new NpgsqlConnection(_connexionString))
             {
-                string query = "select J.titre,J.DESCRIPTION,J.IMAGE from jeux J ";
-                List<Jeux> Jeux;
-                using (var connexion = new NpgsqlConnection(_connexionString))
-                {
-                    Jeux = connexion.Query<Jeux>(query).ToList();
-                }
-                ViewData["i"] = i;
-                return View(Jeux);
+                Jeux = connexion.Query<Jeux>(query).ToList();
             }
+            ViewData["i"] = i;
+            return View(Jeux);
+
         }
-        
-            
-        
+      
+     
+
+
 
         public IActionResult Gestion()
         {
-            
+
             return View();
         }
 
         public IActionResult Reservation()
         {
-            
+
             return View();
         }
 
