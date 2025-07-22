@@ -2,6 +2,9 @@
 
 <div class="catalogue">
 	@{
+		ViewData["Title"] = "Legal Policy";
+	}
+	@{
 		Layout = "~/Views/Shared/_LayoutSite.cshtml";
 	}
 	@{
@@ -12,12 +15,12 @@
 		List<Jeux> Jeux = Model;
 		Jeux.Sort((a, b) => a.titre.CompareTo(b.titre));
 	}
-	<form asp-controller="Home" asp-action="Catalogue"  method="get">
+	<form asp-controller="Home" asp-action="Catalogue" method="get">
 		@* <label for=""></label>
 	<input type="radio" name="trie" value="" />	 *@
-	<input type="hidden" name="sort" value="nom" />
-	<input type="submit" value="tri par nom" />
-	
+		<input type="hidden" name="sort" value="nom" />
+		<input type="submit" value="tri par nom" />
+
 	</form>
 	<form asp-controller="Home" asp-action="Catalogue" method="get">
 		@* <label for=""></label>
@@ -38,30 +41,30 @@
 					<img class="image" src="~/img/jeu/@Jeux[i].image" alt="Alternate Text" />
 					<p>Description</p>
 					<p class="description">@Jeux[i].description</p>
-					<a asp-controller="Home" asp-action="Detail" asp-route-id=></a>
+					<a asp-controller="Catalogue" asp-action="Detail" asp-route-id=></a>
 				</div>
 			}
 			catch { }
 
 		}
 		<div class="bar-button">
-		@if (avant >= 1)
-		{
-			<button><a asp-controller="Home" asp-action="Catalogue" asp-route-i=@avant>avant</a></button>
-		}
-		else
-		{
-			<button>avant</button>
-		}
+			@if (avant >= 1)
+			{
+				<button><a asp-controller="Catalogue" asp-action="Index" asp-route-i=@avant>avant</a></button>
+			}
+			else
+			{
+				<button>avant</button>
+			}
 
-		@if (max <= Math.Round(@Jeux.Count/5.0,1)*5)
-		{
-			<button><a asp-controller="Home" asp-action="Catalogue" asp-route-i=@apres>suite</a></button>
-		}
-		else
-		{
-			<button>suite</button>
-		}
+			@if (max <= Math.Round(@Jeux.Count / 5.0, 1) * 5)
+			{
+				<button><a asp-controller="Catalogue" asp-action="Index" asp-route-i=@apres>suite</a></button>
+			}
+			else
+			{
+				<button>suite</button>
+			}
 		</div>
 
 	</div>

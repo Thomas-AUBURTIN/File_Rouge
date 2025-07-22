@@ -1,4 +1,7 @@
-﻿///visualisation du  mot de passe
+﻿
+
+
+///visualisation du  mot de passe
 //ciblage des 2 image de fleche
 const eye = document.getElementById("eye");
 const psw = document.getElementById("psw");
@@ -12,6 +15,12 @@ eye.addEventListener('mouseout', function () {
     
 });
 /// fin visualisation
+
+
+
+
+
+
 ///image profil
 //recuperation l'elment html img image-profil et input type file pp 
 const img_profil = document.getElementById('img-profil');
