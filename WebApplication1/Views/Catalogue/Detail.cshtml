@@ -10,5 +10,35 @@
 	<h1>@Model.titre</h1>
 	<img src="~/img/jeu/@Model.image" />
 	<p class="description">@Model.description</p>
-	<p class="theme">Auteur : @Model.auteur</p>
+	<p>nombre de joueur conseiller : @Model.nombrejoueursrecommandes</p>
+	<p>temps de jeu moyen : @Model.tempsdejeumoyen</p>
+	<ul>Theme :
+	@foreach (Theme theme in @Model.themes)
+	{
+		<li>theme.nom</li>
+
+	}
+	<
+	</ul>
+	<ul>
+		Type :
+		@foreach (TypeJeux type in @Model.types)
+		{
+			<li>type.nom</li>
+
+		}
+		<
+	</ul>
+	<ul>
+		Type :
+		@foreach (Commentaire commentaire in @Model.commentaires)
+		{
+			<li>
+				<p>commentaire.commentaire</p>
+				<p>commentaire.utilisateurId - commentaire.datecommentaires</p>
+				</li>
+
+		}
+		<
+	</ul>
 </div>
