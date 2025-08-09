@@ -39,9 +39,44 @@ namespace WebApplication1.Controllers
                 return NotFound();
             }
         }
-        public IActionResult Inscription()
+        public IActionResult Inscription([FromForm] Utilisateur utilisateur)
         {
-            return View();
+            string query = "INSERT INTO utilisateurs (nom, email, motdepasse, telephone, dateinscription,administrateur) VALUES(@nom,@email,@motdepasse,@telephone,@dateinscription, false);";
+
+            using (var connexion = new NpgsqlConnection(_connexionString))
+            {
+                try
+                {
+                    int nbLignesInserees = connexion.Execute(query, utilisateur);
+                }
+                catch (PostgresException e)
+                {
+                    if (e.ConstraintName!=null) { 
+                    if (e.ConstraintName.Contains("email"))
+                    {
+                        ViewData["ValidateMessage"] = "Cet email est déjà utilisé.";
+                    }
+                    if (e.ConstraintName.Contains("nom"))
+                    {
+                        ViewData["ValidateMessage"] = "Ce nom est déjà utilisé.";
+                    }
+                    if (e.ConstraintName.Contains("mot"))
+                    {
+                        ViewData["ValidateMessage"] = "Ce nom est déjà utilisé.";
+                    }
+                }
+                    return View("", utilisateur);
+                }
+                catch (Exception e)
+                {
+                    ViewData["ValidatMessage"] = "Erreur serveur. Veuillez réessayer ultérieurement. Si jamais ça continu contectez le support.";
+                    // message d'erreur
+                    return View("EditeurUtilisateur");
+                }
+            }
+
+
+            return View("Connection");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
