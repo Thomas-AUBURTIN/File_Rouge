@@ -39,7 +39,12 @@ namespace WebApplication1.Controllers
                 return NotFound();
             }
         }
-        public IActionResult Inscription([FromForm] Utilisateur utilisateur)
+        public IActionResult Inscription()
+        {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult EssaiInscription([FromForm] Utilisateur utilisateur)
         {
             string query = "INSERT INTO utilisateurs (nom, email, motdepasse, telephone, dateinscription,administrateur) VALUES(@nom,@email,@motdepasse,@telephone,@dateinscription, false);";
 
@@ -65,13 +70,13 @@ namespace WebApplication1.Controllers
                         ViewData["ValidateMessage"] = "Ce nom est déjà utilisé.";
                     }
                 }
-                    return View("", utilisateur);
+                    return View("Inscription", utilisateur);
                 }
                 catch (Exception e)
                 {
                     ViewData["ValidatMessage"] = "Erreur serveur. Veuillez réessayer ultérieurement. Si jamais ça continu contectez le support.";
                     // message d'erreur
-                    return View("EditeurUtilisateur");
+                    return View("Inscription");
                 }
             }
 
