@@ -4,7 +4,7 @@
 @model Utilisateur
 @{
     <div class="inscription">
-        <form class="form-insc" asp-controller="Utilisateurs" asp-action="EssaiInscription" method="post">
+        <form asp-controller="Utilisateurs" asp-action="EssaiInscription" method="post">
             <label asp-for="@Model.nom"> nom : </label>
             <input asp-for="@Model.nom">
             <label asp-for="@Model.pseudo">pseudo : </label>

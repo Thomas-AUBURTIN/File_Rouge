@@ -30,9 +30,7 @@ namespace WebApplication1.Controllers
             {
                 ListJeux = connexion.Query<Jeux>(query).ToList();
             }
-            
             ViewData["i"] = i;
-            ViewData["count"] = ListJeux.Count;
             return View(ListJeux);
         }
 

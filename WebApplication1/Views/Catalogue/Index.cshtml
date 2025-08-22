@@ -10,10 +10,10 @@
 	@{
 		int max = (int)ViewData["i"] + 5;
 		int avant = (int)ViewData["i"] - 5;
+		int apres = (int)ViewData["i"] + 6;
 		int depart = (int)ViewData["i"];
-		int nbJeux = (int)ViewData["count"];
 		List<Jeux> Jeux = Model;
-		// Jeux.Sort((a, b) => a.titre.CompareTo(b.titre));
+		Jeux.Sort((a, b) => a.titre.CompareTo(b.titre));
 	}
 	<form asp-controller="Home" asp-action="Catalogue" method="get">
 		@* <label for=""></label>
@@ -28,20 +28,6 @@
 		<input type="hidden" name="sort" value="auteur" />
 		<input type="submit" value="tri par auteurs" />
 
-	</form>
-
-	<form>
-		<label for="type">trie par</label>
-
-		<select name="sort-type" id="sort-type">
-			<option value="">--Choissiset un type--</option>
-			<option value="dog">Dog</option>
-			<option value="cat">Cat</option>
-			<option value="hamster">Hamster</option>
-			<option value="parrot">Parrot</option>
-			<option value="spider">Spider</option>
-			<option value="goldfish">Goldfish</option>
-		</select>
 	</form>
 
 
@@ -62,7 +48,7 @@
 
 		}
 		<div class="bar-button">
-			@if (avant >= 0)
+			@if (avant >= 1)
 			{
 				<button><a asp-controller="Catalogue" asp-action="Index" asp-route-i=@avant>avant</a></button>
 			}
@@ -71,9 +57,9 @@
 				<button>avant</button>
 			}
 
-			@if (max < nbJeux)
+			@if (max <= Math.Round(@Jeux.Count / 5.0, 1) * 5)
 			{
-				<button><a asp-controller="Catalogue" asp-action="Index" asp-route-i=@max>suite</a></button>
+				<button><a asp-controller="Catalogue" asp-action="Index" asp-route-i=@apres>suite</a></button>
 			}
 			else
 			{
