@@ -4,6 +4,7 @@ namespace WebApplication1.Models
 {
     public class Jeux
     {
+        //ceci est un test
         public int  jeuid { get; set; }
         [Required(ErrorMessage = "Le titre est obligatoire")]
         public string? titre { get; set; }
