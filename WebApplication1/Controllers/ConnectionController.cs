@@ -1,9 +1,8 @@
 ﻿using System.Diagnostics;
+using Dapper;
 using Microsoft.AspNetCore.Mvc;
 using Npgsql;
 using WebApplication1.Models;
-using Dapper;
-using Microsoft.Extensions.Configuration;
 
 namespace WebApplication1.Controllers
 {
@@ -22,6 +21,7 @@ namespace WebApplication1.Controllers
                 throw new Exception("Error : Connexion string not found ! ");
             }
         }
+
         public IActionResult Index()
         {
             string query = "select * from JEUX where jeuid=1 or jeuid=2 or jeuid=3 or jeuid=4 ;";
@@ -39,11 +39,12 @@ namespace WebApplication1.Controllers
                 return NotFound();
             }
         }
+
         public IActionResult Inscription()
         {
             return View();
         }
-        
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

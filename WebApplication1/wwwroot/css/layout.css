@@ -3,10 +3,7 @@
     padding: 0;
 }
 
-
-
 body {
-    
     background-size: 100% 100vh;
     background-image: url('../img/site/img-boutique.jpg');
     background-repeat: no-repeat;
@@ -14,37 +11,31 @@ body {
     box-sizing: border-box;
 }
 
-
-
 footer {
     background-color: rgb(255, 255, 255, 0.7);
     position: fixed;
     bottom: 0;
     width: 100vw;
     height: 5vh;
-    display:flex;
-    justify-content:end;
+    display: flex;
+    justify-content: end;
     align-items: center;
-    padding-right:2em;
-
+    padding-right: 2em;
 }
+
 main {
     position: fixed;
     top: 10vh;
     left: 0;
     width: 100vw;
     height: 85vh;
-
 }
-
-
-
-
 
 a {
     text-decoration: none;
     color: black;
 }
+
 header {
     background-color: rgb(255, 255, 255, 0.7);
     position: fixed;
@@ -56,7 +47,6 @@ header {
     align-items: center;
 }
 
-
 #logo {
     height: 10vh;
 }
@@ -67,10 +57,10 @@ h1 {
 }
 
 @media (min-width: 600px) {
-
     h1 {
         padding: 0;
     }
+
     footer {
         justify-content: end;
     }

@@ -1,9 +1,4 @@
-﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
-using Npgsql;
-using WebApplication1.Models;
-using Dapper;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace WebApplication1.Controllers
 {
@@ -13,6 +8,7 @@ namespace WebApplication1.Controllers
         {
             return View();
         }
+
         public IActionResult Privacy()
         {
             return View();
