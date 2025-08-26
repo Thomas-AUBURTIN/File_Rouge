@@ -54,7 +54,7 @@
 					<img class="image" src="~/img/jeu/@Model.ListJeux[i].image" alt="Alternate Text" />
 					<p>Description</p>
 					<p class="description">@Model.ListJeux[i].description</p>
-					<a asp-controller="Catalogue" asp-action="Detail" asp-route-id=@Model.ListJeux[i].>Détail</a>
+					<a asp-controller="Catalogue" asp-action="Detail" asp-route-id=@Model.ListJeux[i].jeuid>Détail</a>
 				</div>
 			}
 			catch { }

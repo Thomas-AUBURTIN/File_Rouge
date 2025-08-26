@@ -6,6 +6,7 @@ using Npgsql;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using WebApplication1.ViewModels;
+using System.Data;
 
 namespace WebApplication1.Controllers
 {
@@ -27,7 +28,7 @@ namespace WebApplication1.Controllers
 
         public IActionResult Index(int i, string sort)
         {
-            string query = "select J.titre,J.DESCRIPTION,J.IMAGE from jeux J order by J.TITRE";
+            string query = "select J.* from jeux J order by J.TITRE";
             CatalogueViewModel catalogue_jeux = new CatalogueViewModel();
             using (var connexion = new NpgsqlConnection(_connexionString))
             {
@@ -178,5 +179,62 @@ namespace WebApplication1.Controllers
 
             }
         }
+        public IActionResult Detail(int id)
+        {
+
+            Jeux jeu;
+            string queryjeux = "select j.*,t1.*,t2.* ,c.* from jeux j join JEUX_THEME JT1 on j.JEUID = jt1.JEUID join theme t1 on t1.THEMEID  = jt1.THEMEID join JEUX_TYPE JT2 on j.JEUID = jt2.JEUID join types t2 on t2.typeID  = jt2.typeID join COMMENTAIRES C  on c.JEUID = j.JEUID  where j.JEUID = @id";
+            List<Jeux> jeux;
+            using (var connexion = new NpgsqlConnection(_connexionString))
+            {
+                try
+                {
+
+                jeux = connexion.Query<Jeux, Theme, JeuxType, Commentaire, Jeux>(queryjeux,
+                (jeu, theme, type, commentaire) =>
+                {
+                    jeu.themes.Add(theme);
+                    jeu.types.Add(type);
+                    jeu.commentaires.Add(commentaire);
+
+                    return jeu;
+                }, new { id = id },
+                splitOn: "themeid,typeid,jeuid"
+                ).ToList();
+
+                }catch(System.Exception ex)
+                {
+                    return NotFound();
+                }
+
+                jeu = jeux.GroupBy(j => j.jeuid).Select(g =>
+            {
+                Jeux groupedJeu = g.First();
+                if (groupedJeu.commentaires.Count != 0)
+                {
+                    groupedJeu.commentaires = g.Select(j => j.commentaires.Single())
+                    .DistinctBy((c) => c.jeuId) // pour ne pas avoir de doublon sur la catégories on le distinct by 
+                                                .ToList();
+                }
+                if (groupedJeu.types.Count != 0)
+                {
+                    groupedJeu.types = g.Select(j => j.types.Single())
+                                                .DistinctBy((c) => c.typeId) // pour ne pas avoir de doublon sur la catégories on le distinct by 
+                                                .ToList();
+
+                }
+                if (groupedJeu.themes.Count != 0)
+                {
+                    groupedJeu.themes = g.Select(j => j.themes.Single())
+                                                .DistinctBy((c) => c.themeId) // pour ne pas avoir de doublon sur la catégories on le distinct by 
+                                                .ToList();
+
+                }
+                return groupedJeu;
+            }).First();
+            return View(jeu);
+        }
     }
+
+}
 }
