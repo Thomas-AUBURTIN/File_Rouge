@@ -16,36 +16,29 @@
 		
 		// Jeux.Sort((a, b) => a.titre.CompareTo(b.titre));
 	}
-	<form asp-controller="Home" asp-action="Catalogue" method="get">
+	<form asp-controller="Catalogue" asp-action="Trie" asp method="post">
 		@* <label for=""></label>
 	<input type="radio" name="trie" value="" />	 *@
-		<input type="hidden" name="sort" value="nom" />
-		<input type="submit" value="tri par nom" />
+@* 		<input type="hidden" name="sort" value="nom" />
+		<input type="submit" value="tri par nom" /> *@
 
-	</form>
-	<form asp-controller="Home" asp-action="Catalogue" method="get">
 		@* <label for=""></label>
 	<input type="radio" name="trie" value="" />	 *@
-		<input type="hidden" name="sort" value="auteur" />
-		<input type="submit" value="tri par auteurs" />
+@* 		<input type="hidden" name="sort" value="auteur" />
+		<input type="submit" value="tri par auteurs" /> *@
 
-	</form>
-	<form asp-controller="Catalogue" asp-action="TrieType" method="post">
 		<label asp-for="SelectedType"></label>
 		<select asp-for="SelectedType" asp-items="Model.ListTypes" ></select>
-		<button type="submit">Valider</button>
-	</form>
-	<form asp-controller="Catalogue" asp-action="TrieTheme"  method="post">
+		
+
 		<label asp-for="SelectedTheme"></label>
 		<select asp-for="SelectedTheme" asp-items="Model.ListThemes" ></select>
-		<button type="submit">Valider</button>
-	</form>
-	<form asp-controller="Catalogue" asp-action="TrieJoueur" method="post">
+		
+
 		<label asp-for="SelectedJoueur"></label>
 		<select asp-for="SelectedJoueur" asp-items="Model.ListJoueur"></select>
-		<button type="submit">Valider</button>
-	</form>
-	<form asp-controller="Catalogue" asp-action="TrieJoueur" method="post">
+		
+
 		<label asp-for="Selectedtemps"></label>
 		<select asp-for="Selectedtemps" asp-items="Model.ListTemps"></select>
 		<button type="submit">Valider</button>

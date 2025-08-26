@@ -45,16 +45,57 @@ namespace WebApplication1.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-        public IActionResult TrieType([FromForm] CatalogueViewModel typejeux)
+        [HttpPost]
+        public IActionResult Trie([FromForm] CatalogueViewModel typejeux)
         {
             CatalogueViewModel Jeutrie = new CatalogueViewModel();
 
-            string querytype = "select J.*  from JEUX J join JEUX_TYPE JT on JT.JEUID  =J.JEUID  where JT.typeid = @id order by J.TITRE;";
+            string querytrie = "select distinct j.*   from JEUX j  join JEUX_THEME jt1 on j.JEUID = jt1.JEUID  join THEME T1 on t1.THEMEID  = jt1.THEMEID  join JEUX_type jt2 on j.JEUID = jt2.JEUID  join Types T2 on t2.TYPEID = jt2.TYPEID  where";
+            bool first = true;
+            if (typejeux.SelectedTheme != null)
+            {
+                if (first) { first = false; }
+                else { querytrie += " and "; }
+                querytrie += " t1.themeid = @theme ";
+            }
+            ;
+            if (typejeux.SelectedType != null)
+            {
+                if (first) { first = false; }
+                else { querytrie += " and "; }
+                querytrie += " t2.typeid = @type ";
+            }
+            ;
+            if (typejeux.SelectedJoueur != null)
+            {
+                if (first) { first = false; }
+                else { querytrie += " and "; }
+                querytrie += " j.nombrejoueursrecommandes = @joueur ";
+            }
+            ;
+            if (typejeux.Selectedtemps != null)
+            {
+                if (first) { first = false; }
+                else { querytrie += " and "; }
+                querytrie += " j.tempsjeumoyen = @temps ";
+            }
+            ;
+            querytrie += "  order by j.titre; ";
+
+
+
+
             using (var connexion = new NpgsqlConnection(_connexionString))
             {
                 try
                 {
-                    Jeutrie.ListJeux = connexion.Query<Jeux>(querytype, new { id = int.Parse(typejeux.SelectedType) }).ToList();
+                    Jeutrie.ListJeux = connexion.Query<Jeux>(querytrie, new
+                    {
+                        theme = string.IsNullOrEmpty(typejeux.SelectedTheme) ? (int?)null : int.Parse(typejeux.SelectedTheme),
+                        type = string.IsNullOrEmpty(typejeux.SelectedType) ? (int?)null : int.Parse(typejeux.SelectedType),
+                        joueur = string.IsNullOrEmpty(typejeux.SelectedJoueur) ? (int?)null : int.Parse(typejeux.SelectedJoueur),
+                        temps = string.IsNullOrEmpty(typejeux.Selectedtemps) ? (int?)null : int.Parse(typejeux.Selectedtemps)
+                    }).ToList();
 
 
                 }
@@ -70,30 +111,7 @@ namespace WebApplication1.Controllers
             return View("Index", Jeutrie);
         }
 
-        public IActionResult TrieTheme([FromForm] CatalogueViewModel themejeux)
-        {
-            CatalogueViewModel Jeutrie = new CatalogueViewModel();
 
-            string querytheme = "select J.*  from JEUX J join JEUX_Theme JT on JT.JEUID  =J.JEUID  where JT.themeid = @id order by J.TITRE;";
-            using (var connexion = new NpgsqlConnection(_connexionString))
-            {
-                try
-                {
-                    Jeutrie.ListJeux = connexion.Query<Jeux>(querytheme, new { id = int.Parse(themejeux.SelectedTheme) }).ToList();
-
-
-                }
-                catch (Exception ex)
-                {
-                    ViewData["ErrorMessage"] = "pas de theme ";
-                    throw new Exception("Les données rentrées ne sont pas correctes, veuillez réessayer.");
-                }
-            }
-            ;
-            Jeutrie = getTypesThemes(Jeutrie);
-            ViewData["i"] = 0;
-            return View("Index", Jeutrie);
-        }
 
 
 
@@ -101,6 +119,11 @@ namespace WebApplication1.Controllers
         {
 
 
+
+            listjeux.ListThemes.Add(new SelectListItem("--Choix tu trie--", ""));
+            listjeux.ListTypes.Add(new SelectListItem("--Choix tu trie--", ""));
+            listjeux.ListJoueur.Add(new SelectListItem("--Choix tu trie--", ""));
+            listjeux.ListTemps.Add(new SelectListItem("--Choix tu trie--", ""));
 
 
             {
@@ -156,3 +179,4 @@ namespace WebApplication1.Controllers
             }
         }
     }
+}

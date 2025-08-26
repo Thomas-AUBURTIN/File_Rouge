@@ -15,7 +15,7 @@
 	<ul>Theme :
 	@foreach (Theme theme in @Model.themes)
 	{
-		<li>theme.nom</li>
+		<li>@theme.nom</li>
 
 	}
 	<
@@ -24,7 +24,7 @@
 		Type :
 		@foreach (WebApplication1.Models.JeuxType type in Model.types)
 		{
-			<li>type.nom</li>
+			<li>@type.nom</li>
 
 		}
 		<
@@ -34,8 +34,8 @@
 		@foreach (Commentaire commentaire in @Model.commentaires)
 		{
 			<li>
-				<p>commentaire.commentaire</p>
-				<p>commentaire.utilisateurId - commentaire.datecommentaires</p>
+				<p>@commentaire.commentaire</p>
+				<p>@commentaire.utilisateurId - @commentaire.datecommentaires</p>
 				</li>
 
 		}
