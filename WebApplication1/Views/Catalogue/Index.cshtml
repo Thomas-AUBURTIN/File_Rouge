@@ -55,6 +55,8 @@
 					<p>Description</p>
 					<p class="description">@Model.ListJeux[i].description</p>
 					<a asp-controller="Catalogue" asp-action="Detail" asp-route-id=@Model.ListJeux[i].jeuid>Détail</a>
+					<a asp-controller="Catalogue" asp-action="editer" asp-route-id=@Model.ListJeux[i].jeuid>Détail</a>
+					<a asp-controller="Catalogue" asp-action="supprimer" asp-route-id=@Model.ListJeux[i].jeuid>Détail</a>
 				</div>
 			}
 			catch { }

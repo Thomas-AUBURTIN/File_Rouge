@@ -208,33 +208,33 @@ namespace WebApplication1.Controllers
                 }
 
                 jeu = jeux.GroupBy(j => j.jeuid).Select(g =>
-            {
-                Jeux groupedJeu = g.First();
-                if (groupedJeu.commentaires.Count != 0)
                 {
-                    groupedJeu.commentaires = g.Select(j => j.commentaires.Single())
-                    .DistinctBy((c) => c.jeuId) // pour ne pas avoir de doublon sur la catégories on le distinct by 
-                                                .ToList();
-                }
-                if (groupedJeu.types.Count != 0)
-                {
-                    groupedJeu.types = g.Select(j => j.types.Single())
-                                                .DistinctBy((c) => c.typeId) // pour ne pas avoir de doublon sur la catégories on le distinct by 
-                                                .ToList();
+                    Jeux groupedJeu = g.First();
+                    if (groupedJeu.commentaires.Count != 0)
+                    {
+                        groupedJeu.commentaires = g.Select(j => j.commentaires.Single())
+                        .DistinctBy((c) => c.jeuId) // pour ne pas avoir de doublon sur la catégories on le distinct by 
+                                                    .ToList();
+                    }
+                    if (groupedJeu.types.Count != 0)
+                    {
+                        groupedJeu.types = g.Select(j => j.types.Single())
+                                                    .DistinctBy((c) => c.typeId) // pour ne pas avoir de doublon sur la catégories on le distinct by 
+                                                    .ToList();
 
-                }
-                if (groupedJeu.themes.Count != 0)
-                {
-                    groupedJeu.themes = g.Select(j => j.themes.Single())
-                                                .DistinctBy((c) => c.themeId) // pour ne pas avoir de doublon sur la catégories on le distinct by 
-                                                .ToList();
+                    }
+                    if (groupedJeu.themes.Count != 0)
+                    {
+                        groupedJeu.themes = g.Select(j => j.themes.Single())
+                                                    .DistinctBy((c) => c.themeId) // pour ne pas avoir de doublon sur la catégories on le distinct by 
+                                                    .ToList();
 
-                }
-                return groupedJeu;
-            }).First();
-            return View(jeu);
+                    }
+                    return groupedJeu;
+                }).First();
+                return View(jeu);
+            }
         }
-    }
 
-}
+    }
 }
