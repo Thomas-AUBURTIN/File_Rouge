@@ -1,5 +1,51 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@using WebApplication1.ViewModels
+@model EditeurJeuViewModel
+<h1>@Model.titre</h1>
+@if (ViewData.ContainsKey("ValidateMessage"))
+{
+	<p>@ViewData["ValidateMessage"]</p>
+}
+<form asp-controller="Livres" asp-action="@Model.action" asp-route-id="@Model.idLivre" method="post" enctype="multipart/form-data">
+	<table>
+		<tr>
+			<td><label asp-for="@Model.Jeu.titre"></label></td>
+			<td><input asp-for="@Model.Jeu.titre"></td>
+			<td><span asp-validation-for="@Model.Jeu.titre" class="text-danger"></span></td>
+		</tr>
+		<tr>
+			<td><label asp-for="@Model.Jeu.description"></label></td>
+			<td><input asp-for="@Model.Jeu.description"></td>
+			<td><span asp-validation-for="@Model.Jeu.description" class="text-danger"></span></td>
+		</tr>
+		<label for="pp"><img src="/img/jeu/@Model.Jeu.image" alt="">  photo de profil : </label>
+		<input type="file" name="pp" id="pp" accept="image/png, image/jpeg">
+		<img src="/img/site/@Model.Jeu.image" id="img-profil" alt="">
+
+
+		<label asp-for="SelectedTypes"></label>
+		<select asp-for="SelectedTypes" asp-items="Model.ListTypes"></select>
+
+
+		<label asp-for="SelectedThemes"></label>
+		<select asp-for="SelectedThemes" asp-items="Model.ListThemes"></select>
+
+
+		<label asp-for="SelectedJoueur"></label>
+		<select asp-for="SelectedJoueur" asp-items="Model.ListJoueur"></select>
+
+
+		<label asp-for="Selectedtemps"></label>
+		<select asp-for="Selectedtemps" asp-items="Model.ListTemps"></select>
+		<button type="submit">Valider</button>
+	</table>
+
+
+
+	<input type="hidden" name="Jeu.image" value="@Model.Jeu.image">
+	<input type="hidden" asp-for="@Model.Jeu.jeuid">
+	<input type="submit" value="Envoyer">
+</form>
+
+@section Scripts {
+	<partial name="_ValidationScriptsPartial" />
 }
