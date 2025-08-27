@@ -5,7 +5,10 @@
 {
 	<p>@ViewData["ValidateMessage"]</p>
 }
-<form asp-controller="Gestion" asp-action="@Model.action" asp-route-id="@Model.Jeu.jeuid" method="post" enctype="multipart/form-data">
+@{
+	Layout = "~/Views/Shared/_LayoutSite.cshtml";
+}
+<form asp-controller="Catalogue" asp-action="@Model.action" asp-route-id="@Model.Jeu.jeuid" method="post" enctype="multipart/form-data">
 	<table>
 		<tr>
 			<td><label asp-for="@Model.Jeu.titre"></label></td>
@@ -23,15 +26,15 @@
 
 
 		<label asp-for="SelectedTypes"></label>
-		<select asp-for="SelectedTypes" asp-items="Model.ListTypes"></select>
+		<select asp-for="SelectedTypes" asp-items="Model.ListTypes" multiple="multiple"></select>
 
 
 		<label asp-for="SelectedThemes"></label>
-		<select asp-for="SelectedThemes" asp-items="Model.ListThemes"></select>
+		<select asp-for="SelectedThemes" asp-items="Model.ListThemes" multiple="multiple"></select>
 
 
 		<label asp-for="SelectedJoueur"></label>
-		<select asp-for="SelectedJoueur" asp-items="Model.ListJoueur"></select>
+		<select asp-for="SelectedJoueur" asp-items="Model.ListJoueur" ></select>
 
 
 		<label asp-for="Selectedtemps"></label>
