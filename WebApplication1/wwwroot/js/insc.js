@@ -18,7 +18,7 @@ const img_profil = document.getElementById('img-profil');
 const input_profil = document.getElementById('pp');
 
 //ajout d'un listenner sur l'input file quand les fichier change
-input_profil.addEventListener('change', change_img)
+/*input_profil.addEventListener('change', change_img)*/
 /**
  *
 function pour changer la source de la balise image suivant le changement fait dans l'input file

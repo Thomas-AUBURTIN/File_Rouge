@@ -251,11 +251,18 @@ namespace WebApplication1.Controllers
 
                 using (var connexion = new NpgsqlConnection(_connexionString))
                 {
+
+
+
                     string queryThemes = "select distinct j.themeid , t.nom from jeux_theme j   join THEME t on j.themeid=t.themeid order by themeid ";
                     List<Theme> Themes = connexion.Query<Theme>(queryThemes).ToList();
                     foreach (Theme Theme in Themes)
                     {
-                        bool selected = singleJeux.Jeu.idTheme.Contains(Theme.themeId);
+                        bool selected = false;
+                        if (singleJeux.Jeu != null)
+                        {
+                            selected = singleJeux.Jeu.idThemes.Contains(Theme.themeId);
+                        }
                         singleJeux.ListThemes.Add(new SelectListItem(Theme.nom, Theme.themeId.ToString(), selected));
                     }
 
@@ -267,7 +274,11 @@ namespace WebApplication1.Controllers
                     List<JeuxType> Types = connexion.Query<JeuxType>(queryTypes).ToList();
                     foreach (JeuxType type in Types)
                     {
-                        bool selected = singleJeux.Jeu.idType.Contains(type.typeId) ? true : false;
+                        bool selected = false;
+                        if (singleJeux.Jeu != null)
+                        {
+                            selected = singleJeux.Jeu.idTypes.Contains(type.typeId) ? true : false;
+                        }
                         singleJeux.ListTypes.Add(new SelectListItem(type.nom, type.typeId.ToString(), selected));
                     }
 
@@ -280,7 +291,11 @@ namespace WebApplication1.Controllers
                     List<int> Temps = connexion.Query<int>(queryTemps).ToList();
                     foreach (int temp in Temps)
                     {
-                        bool selected = singleJeux.Jeu.tempsjeumoyen == temp ? true : false;
+                        bool selected = false;
+                        if (singleJeux.Jeu != null)
+                        {
+                            selected = singleJeux.Jeu.tempsjeumoyen == temp ? true : false;
+                        }
                         singleJeux.ListTemps.Add(new SelectListItem(temp.ToString(), temp.ToString(), selected));
                     }
 
@@ -292,9 +307,14 @@ namespace WebApplication1.Controllers
                     List<int> Joueurs = connexion.Query<int>(queryJoueurs).ToList();
                     foreach (int Joueur in Joueurs)
                     {
-                        bool selected = singleJeux.Jeu.nombrejoueursrecommandes == Joueur ? true : false;
+                        bool selected = false;
+                        if (singleJeux.Jeu != null)
+                        {
+                            selected = singleJeux.Jeu.nombrejoueursrecommandes == Joueur ? true : false;
+                        }
                         singleJeux.ListJoueur.Add(new SelectListItem(Joueur.ToString(), Joueur.ToString(), selected));
                     }
+
 
 
                 }
@@ -328,7 +348,7 @@ namespace WebApplication1.Controllers
             }
             return filePath;
         }
-        public IActionResult editer(int id)
+        public IActionResult Editer(int id)
         {
 
             using (var connexion = new NpgsqlConnection(_connexionString))
@@ -346,8 +366,8 @@ namespace WebApplication1.Controllers
                     {
                         jeu.themes.Add(theme);
                         jeu.types.Add(type);
-                        jeu.idType.Add(type.typeId);
-                        jeu.idTheme.Add(theme.themeId);
+                        jeu.idTypes.Add(type.typeId);
+                        jeu.idThemes.Add(theme.themeId);
 
                         return jeu;
                     }, new { id = id },
@@ -365,8 +385,8 @@ namespace WebApplication1.Controllers
                     groupedJeux = g.First();
                     groupedJeux.themes = g.Select(l => l.themes.First()).ToList();
                     groupedJeux.types = g.Select(l => l.types.First()).ToList();
-                    groupedJeux.idType = g.Select(l => l.idType.First()).Distinct().ToList();
-                    groupedJeux.idTheme = g.Select(l => l.idTheme.First()).Distinct().ToList();
+                    groupedJeux.idTypes = g.Select(l => l.idTypes.First()).Distinct().ToList();
+                    groupedJeux.idThemes = g.Select(l => l.idThemes.First()).Distinct().ToList();
                     return groupedJeux;
                 }).First();
 
@@ -375,9 +395,9 @@ namespace WebApplication1.Controllers
             }
         }
         [HttpPost]
-        public IActionResult Editer([FromRoute] int id, [FromForm] EditeurJeuViewModel jeu)
+        public IActionResult Editer([FromRoute] int id, [FromForm] Jeux jeu)
         {
-            if (id != jeu.Jeu.jeuid)
+            if (id != jeu.jeuid)
             {
                 return BadRequest();
             }
@@ -389,19 +409,19 @@ namespace WebApplication1.Controllers
                     throw new Exception("Les données rentrées ne sont pas correctes, veuillez réessayer.");
                 }
                 // gestion de la couverture si une image est fournie
-                if (jeu.Jeu.imageFile != null && jeu.Jeu.imageFile.Length > 0)
+                if (jeu.imageFile != null && jeu.imageFile.Length > 0)
                 {
-                    if (System.IO.File.Exists("wwwroot/img/jeu/" + jeu.Jeu.image))
+                    if (System.IO.File.Exists("wwwroot/img/jeu/" + jeu.image))
                     {
-                        System.IO.File.Delete("wwwroot/img/jeu/" + jeu.Jeu.image);
+                        System.IO.File.Delete("wwwroot/img/jeu/" + jeu.image);
                     }
-                    jeu.Jeu.image = ManageCover(jeu.Jeu.imageFile!);
+                    jeu.image = ManageCover(jeu.imageFile!);
                 }
-                string queryJeux = "UPDATE jeux SET titre=@titre, description=@description, image=@image, nombrejoueursrecommandes=@nombrejoueursrecommandes, tempsjeumoyen=@tempsjeumoyen WHERE id=@id";
+                string queryJeux = "UPDATE jeux SET titre=@titre, description=@description, image=@image, nombrejoueursrecommandes=@nombrejoueursrecommandes, tempsjeumoyen=@tempsjeumoyen WHERE jeuid=@jeuid";
                 string queryRemoveTypes = "DELETE FROM jeux_type WHERE jeuid=@id";
                 string queryRemoveThemes = "DELETE FROM jeux_theme WHERE jeuid=@id";
-                string queryTypes = "INSERT INTO jeux_type (jeuid, typeid) VALUES (@id,@typeid)";
-                string queryThemes = "INSERT INTO jeux_theme (jeuid, themeid) VALUES (@id,@themeid)";
+                string queryTypes = "INSERT INTO jeux_type (jeuid, typeid) VALUES (@jeuid,@typeid)";
+                string queryThemes = "INSERT INTO jeux_theme (jeuid, themeid) VALUES (@jeuid,@themeid)";
 
                 using (var connexion = new NpgsqlConnection(_connexionString))
                 {
@@ -422,24 +442,24 @@ namespace WebApplication1.Controllers
                             connexion.Execute(queryRemoveThemes, new { id = id });
 
                             List<object> listTheme = new List<object>();
-                            foreach (int theme_id in jeu.SelectedTypes)
+                            foreach (int theme_id in jeu.idThemes)
                             {
                                 listTheme.Add(new { jeuid = id, themeid = theme_id });
                             }
                             res = connexion.Execute(queryThemes, listTheme);
-                            if (res != jeu.Jeu.idTheme.Count)
+                            if (res != jeu.idThemes.Count)
                             {
                                 transaction.Rollback();
                                 throw new Exception("Erreur pendant la mise à jour du jeux. Veuillez réessayer plus tard. Si le problème persiste merci de contacter l'administrateur.");
                             }
 
                             List<object> listType = new List<object>();
-                            foreach (int type_id in jeu.SelectedThemes)
+                            foreach (int type_id in jeu.idTypes)
                             {
-                                listTheme.Add(new { jeuid = id, themeid = type_id });
+                                listType.Add(new { jeuid = id, typeid = type_id });
                             }
-                            res = connexion.Execute(queryThemes, listType);
-                            if (res != jeu.Jeu.idType.Count)
+                            res = connexion.Execute(queryTypes, listType);
+                            if (res != jeu.idTypes.Count)
                             {
                                 transaction.Rollback();
                                 throw new Exception("Erreur pendant la mise à jour du jeux. Veuillez réessayer plus tard. Si le problème persiste merci de contacter l'administrateur.");
@@ -448,22 +468,222 @@ namespace WebApplication1.Controllers
                             transaction.Commit();
 
                         }
-            catch (Exception e) {
-                // suppresion de la couverture dans le système de fichier si il y en a une
-                if (jeu.Jeu.imageFile != null && System.IO.File.Exists("wwwroot" + jeu.Jeu.image))
-                {
-                    System.IO.File.Delete("wwwroot" + jeu.Jeu.image);
+                    }
                 }
-                EditeurJeuViewModel jeuViewModel = new() { action = "Editer", titre = "Modification livre", idJeu = id };
-                jeuViewModel.Jeu = jeu.Jeu;
-                jeuViewModel.categories = GetCategories(null, livre.categoriesIDs);
-                ViewData["ValidateMessage"] = e.Message;
-                return View("Editeur", livreViewModel);
+                ViewData["ValidateMessage"] = "Jeux mis à jour";
+                EditeurJeuViewModel jeuViewModel = new() { action = "Editer", titre = "Modification Livre", idJeu = id };
+                jeuViewModel.Jeu = jeu;
+                jeuViewModel = getTypesThemes(jeuViewModel);
+
+                return View("Editer", jeuViewModel);
 
             }
-            
+
+
+            catch (Exception e)
+            {
+                // suppresion de la couverture dans le système de fichier si il y en a une
+                if (jeu.imageFile != null && System.IO.File.Exists("wwwroot" + jeu.image))
+                {
+                    System.IO.File.Delete("wwwroot" + jeu.image);
+                }
+                EditeurJeuViewModel jeuViewModel = new() { action = "Editer", titre = "Modification livre", idJeu = id };
+                jeuViewModel.Jeu = jeu;
+                jeuViewModel = getTypesThemes(jeuViewModel);
+                ViewData["ValidateMessage"] = e.Message;
+                return View("Editer", jeuViewModel);
+
             }
 
         }
+        [HttpGet]
+        public IActionResult Nouveau()
+        {
+            EditeurJeuViewModel jeuViewModel = new() { action = "Nouveau", titre = "Nouveau Livre" };
+            jeuViewModel = getTypesThemes(jeuViewModel);
+            jeuViewModel.Jeu = new Jeux();
+            return View("Editer", jeuViewModel);
+        }
 
+
+        [HttpPost]
+        public IActionResult Nouveau([FromForm] Jeux jeu)
+        {
+            
+            try
+            {
+                // vérification de la validité du model (livre)
+                if (!ModelState.IsValid)
+                {
+                    throw new Exception("Les données rentrées ne sont pas correctes, veuillez réessayer.");
+                }
+
+                // vérification de la non existance du titre dans la bdd
+                string queryTitre = "select j.* from JEUX j where j.titre = @titre;";
+                using (var connexion = new NpgsqlConnection(_connexionString))
+                {
+                    if (connexion.Query(queryTitre, new { titre = jeu.titre }).Count() > 0)
+                    {
+                        ModelState["jeu.titre"]!.Errors.Add(new ModelError("Ce titre existe déjà."));
+                        throw new Exception("Les données rentrées ne sont pas correctes, veuillez réessayer.");
+                    }
+                }
+                // gestion de la couverture si une image est fournie
+                if (jeu.imageFile != null && jeu.imageFile.Length > 0)
+                {
+                    jeu.image = ManageCover(jeu.imageFile!);
+                }
+
+                jeu.dateajout = DateTime.Now;
+                // enregistrement du livre en BDD
+                string queryJeu = "insert into jeux (TITRE, DESCRIPTION, image,NOMBREJOUEURSRECOMMANDES, TEMPSJEUMOYEN,DATEAJOUT) values (@titre, @description, @image, @nombrejoueursrecommandes, @tempsjeumoyen, @dateajout) RETURNING jeuid;";
+                string queryTypes = "INSERT INTO jeux_type (jeuid, typeid) VALUES (@jeuid,@typeid)";
+                string queryThemes = "INSERT INTO jeux_theme (jeuid, themeid) VALUES (@jeuid,@themeid)";
+
+                using (var connexion = new NpgsqlConnection(_connexionString))
+                {
+                    connexion.Open();
+                    using (var transaction = connexion.BeginTransaction())
+                    {
+                        // insert du livre et récupération de son id
+                        int jeu_id = connexion.ExecuteScalar<int>(queryJeu, jeu);
+                        if (jeu_id == 0)
+                        {
+                            transaction.Rollback();
+                            throw new Exception("Erreur pendant la création du jeu. Veuillez réessayer plus tard. Si le problème persiste merci de contacter l'administrateur.");
+                        }
+                        else
+                        {
+                            // ajout des associations avec les themes
+                            List<object> list = new List<object>();
+                            foreach (int theme_id in jeu.idThemes)
+                            {
+                                list.Add(new { jeuid = jeu_id, themeid = theme_id });
+                            }
+                            int res = connexion.Execute(queryThemes, list);
+                            if (res != jeu.idThemes.Count)
+                            {
+                                transaction.Rollback();
+                                throw new Exception("Erreur pendant la création du jeu. Veuillez réessayer plus tard. Si le problème persiste merci de contacter l'administrateur.");
+                            }
+                            // ajout des associations avec les catégories
+                            list = new List<object>();
+                            foreach (int type_id in jeu.idTypes)
+                            {
+                                list.Add(new { jeuid = jeu_id, typeid = type_id });
+                            }
+                            res = connexion.Execute(queryTypes, list);
+                            if (res != jeu.idTypes.Count)
+                            {
+                                transaction.Rollback();
+                                throw new Exception("Erreur pendant la création du jeu. Veuillez réessayer plus tard. Si le problème persiste merci de contacter l'administrateur.");
+                            }
+                            transaction.Commit();
+                        }
+                    }
+
+                }
+                ViewData["ValidateMessage"] = "Livre bien créé !";
+                EditeurJeuViewModel jeuViewModel = new() { action = "Nouveau", titre = "Nouveau Livre" };
+                jeuViewModel.Jeu = new Jeux();
+                jeuViewModel = getTypesThemes(jeuViewModel);
+                return View("Editer", jeuViewModel);
+            }
+            catch (Exception e)
+            {
+                // suppresion de la couverture dans le système de fichier si il y en a une
+                if (jeu.imageFile != null && System.IO.File.Exists("wwwroot" + jeu.image))
+                {
+                    System.IO.File.Delete("wwwroot" + jeu.image);
+                }
+                EditeurJeuViewModel jeuViewModel = new() { action = "Editer", titre = "Modification livre" };
+                jeuViewModel.Jeu = jeu;
+                jeuViewModel = getTypesThemes(jeuViewModel);
+                ViewData["ValidateMessage"] = e.Message;
+                return View("Editer", jeuViewModel);
+
+
+
+            }
+
+
+        }
+        [HttpPost]
+        public IActionResult Supprimer([FromRoute] int id, [FromForm] int idJeu)
+        {
+            if (id != idJeu)
+            {
+                return BadRequest();
+            }
+
+            // requêtes SQL
+            string querySupprimerLiensTypes = "DELETE FROM jeux_type WHERE jeuid=@id;";
+            string querySupprimerLiensThemes = "DELETE FROM jeux_theme WHERE jeuid=@id;";
+            string queryUpdateCommentaire = "UPDATE commentaires SET  jeuid=null WHERE jeuid=@id";
+            string querySupprimerLivre = "DELETE FROM jeux WHERE jeuid=@id;";
+
+            string queryNombresThemes = "SELECT count(*) FROM jeu_theme WHERE jeuid=@id";
+            string queryNombresTypes = "SELECT count(*) FROM jeu_type WHERE jeuid=@id";
+            string queryNombresCommentaires = "SELECT count(*) FROM commentaires WHERE jeuid=@id";
+
+            try
+            {
+
+
+                using (var connexion = new NpgsqlConnection(_connexionString))
+                {
+                    connexion.Open();
+                    using (var transaction = connexion.BeginTransaction())
+                    {
+                        // récupération du nombre de catégories du livre
+                        int nbTheme = connexion.ExecuteScalar<int>(queryNombresThemes, new { id = id });
+                        // exécution de la req de suppression des catégories
+                        int res = connexion.Execute(querySupprimerLiensThemes, new { id = id });
+                        if (res != nbTheme)
+                        {
+                            transaction.Rollback();
+                            throw new Exception("Problème pendant la suppression. Veuillez réessayer plus tard. ");
+                        }
+                        // récupération du nombre de catégories du livre
+                        int nbType = connexion.ExecuteScalar<int>(queryNombresTypes, new { id = id });
+                        // exécution de la req de suppression des catégories
+                        res = connexion.Execute(querySupprimerLiensTypes, new { id = id });
+                        if (res != nbType)
+                        {
+                            transaction.Rollback();
+                            throw new Exception("Problème pendant la suppression. Veuillez réessayer plus tard. ");
+                        }
+
+                        // récupération du nombre d'emprunts de ce livre
+                        int nbCommentaires = connexion.ExecuteScalar<int>(queryNombresCommentaires, new { id = id });
+                        // mise à jour des emprunts
+                        res = connexion.Execute(queryUpdateCommentaire, new { id = id });
+                        if (res != nbCommentaires)
+                        {
+                            transaction.Rollback();
+                            throw new Exception("Problème pendant la suppression. Veuillez réessayer plus tard. ");
+                        }
+
+                        // suppression du livre
+                        res = connexion.Execute(querySupprimerLivre, new { id = id });
+                        if (res != 1)
+                        {
+                            transaction.Rollback();
+                            throw new Exception("Problème pendant la suppression. Veuillez réessayer plus tard. ");
+                        }
+                        transaction.Commit();
+                    }
+
+                }
+            }
+            catch (Exception e)
+            {
+                TempData["ValidateMessage"] = e.Message;
+                return RedirectToAction("Index");
+            }
+
+            TempData["ValidateMessage"] = "Suppression effectuée.";
+            return RedirectToAction("Index");
+        }
+    }
 }

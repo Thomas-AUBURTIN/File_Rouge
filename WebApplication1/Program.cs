@@ -18,6 +18,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Connection}/{action=Index}/{id?}");
+    pattern: "{controller=Acceuil}/{action=index}");
 
 app.Run();

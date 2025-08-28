@@ -8,6 +8,7 @@
 @{
 	Layout = "~/Views/Shared/_LayoutSite.cshtml";
 }
+
 <form asp-controller="Catalogue" asp-action="@Model.action" asp-route-id="@Model.Jeu.jeuid" method="post" enctype="multipart/form-data">
 	<table>
 		<tr>
@@ -18,28 +19,44 @@
 		<tr>
 			<td><label asp-for="@Model.Jeu.description"></label></td>
 			<td><input asp-for="@Model.Jeu.description"></td>
-			<td><span asp-validation-for="@Model.Jeu.description" class="text-danger"></span></td>
+			<td><span asp-validation-for="@Model.Jeu.description" class="text-danger"></span>
 		</tr>
-		<label for="pp"><img src="/img/jeu/@Model.Jeu.image" alt="">  photo de profil : </label>
-		<input type="file" name="pp" id="pp" accept="image/png, image/jpeg">
-		<img src="/img/site/@Model.Jeu.image" id="img-profil" alt="">
-
-
-		<label asp-for="SelectedTypes"></label>
-		<select asp-for="SelectedTypes" asp-items="Model.ListTypes" multiple="multiple"></select>
-
-
-		<label asp-for="SelectedThemes"></label>
-		<select asp-for="SelectedThemes" asp-items="Model.ListThemes" multiple="multiple"></select>
-
-
-		<label asp-for="SelectedJoueur"></label>
-		<select asp-for="SelectedJoueur" asp-items="Model.ListJoueur" ></select>
-
-
-		<label asp-for="Selectedtemps"></label>
-		<select asp-for="Selectedtemps" asp-items="Model.ListTemps"></select>
-		<button type="submit">Valider</button>
+		<tr>
+			<td><label asp-for="@Model.Jeu.imageFile"></label></td>
+			<td><input asp-for="@Model.Jeu.imageFile"></td>
+			<td><span asp-validation-for="@Model.Jeu.imageFile" class="text-danger"></span></td></td>
+		</tr>
+		<tr>
+			<td>
+				<label asp-for="@Model.Jeu.idTypes"></label>
+			</td>
+			<td>
+				<select asp-for="@Model.Jeu.idTypes" asp-items="Model.ListTypes" multiple="multiple"></select>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<label asp-for="@Model.Jeu.idThemes"></label>
+			</td>
+			<td>
+				<select asp-for="@Model.Jeu.idThemes" asp-items="Model.ListThemes" multiple="multiple"></select>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<label asp-for="@Model.Jeu.nombrejoueursrecommandes"></label>
+			</td>
+			<td>
+				<select asp-for="@Model.Jeu.nombrejoueursrecommandes" asp-items="@Model.ListJoueur"></select>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<label asp-for="@Model.Jeu.tempsjeumoyen"></label>
+			</td>
+			<td>
+				<select asp-for="@Model.Jeu.tempsjeumoyen" asp-items="@Model.ListTemps"></select>
+			</td>
 	</table>
 
 
