@@ -18,6 +18,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Acceuil}/{action=index}");
+    pattern: "{controller=Catalogue}/{action=index}");
 
 app.Run();

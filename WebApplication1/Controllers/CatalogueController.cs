@@ -25,7 +25,7 @@ namespace WebApplication1.Controllers
                 throw new Exception("Error : Connexion string not found ! ");
             }
         }
-
+        
         public IActionResult Index(int i, string sort)
         {
             string query = "select J.* from jeux J order by J.TITRE";
@@ -40,12 +40,13 @@ namespace WebApplication1.Controllers
             ViewData["i"] = i;
             return View(catalogue_jeux);
         }
-
+        [ValidateAntiForgeryToken]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+        [ValidateAntiForgeryToken]
         [HttpPost]
         public IActionResult Trie([FromForm] CatalogueViewModel typejeux)
         {
@@ -115,7 +116,7 @@ namespace WebApplication1.Controllers
 
 
 
-
+        [ValidateAntiForgeryToken]
         public CatalogueViewModel getTypesThemes(CatalogueViewModel listjeux)
         {
 
@@ -179,11 +180,12 @@ namespace WebApplication1.Controllers
 
             }
         }
+        [ValidateAntiForgeryToken]
         public IActionResult Detail(int id)
         {
 
             Jeux jeu;
-            string queryjeux = "select j.*,t1.*,t2.* ,c.* from jeux j join JEUX_THEME JT1 on j.JEUID = jt1.JEUID join theme t1 on t1.THEMEID  = jt1.THEMEID join JEUX_TYPE JT2 on j.JEUID = jt2.JEUID join types t2 on t2.typeID  = jt2.typeID join COMMENTAIRES C  on c.JEUID = j.JEUID  where j.JEUID = @id";
+            string queryjeux = "select j.*,t1.*,t2.* ,c.* from jeu j join JEUX_THEME JT1 on j.JEUID = jt1.JEUID join theme t1 on t1.THEMEID  = jt1.THEMEID join JEUX_TYPE JT2 on j.JEUID = jt2.JEUID join types t2 on t2.typeID  = jt2.typeID join COMMENTAIRES C  on c.JEUID = j.JEUID  where j.JEUID = @id";
             List<Jeux> jeux;
             using (var connexion = new NpgsqlConnection(_connexionString))
             {
@@ -236,6 +238,7 @@ namespace WebApplication1.Controllers
                 return View(jeu);
             }
         }
+        [ValidateAntiForgeryToken]
         public EditeurJeuViewModel getTypesThemes(EditeurJeuViewModel singleJeux)
         {
 
@@ -348,6 +351,7 @@ namespace WebApplication1.Controllers
             }
             return filePath;
         }
+        [HttpGet]
         public IActionResult Editer(int id)
         {
 
@@ -394,8 +398,9 @@ namespace WebApplication1.Controllers
                 return View(edit);
             }
         }
+        
         [HttpPost]
-        public IActionResult Editer([FromRoute] int id, [FromForm] Jeux jeu)
+        public IActionResult Editer([FromQuery] int id, [FromForm] Jeux jeu)
         {
             if (id != jeu.jeuid)
             {
@@ -428,7 +433,7 @@ namespace WebApplication1.Controllers
                     connexion.Open();
                     using (var transaction = connexion.BeginTransaction())
                     {
-                        // modification jeux 
+                        // modification jeu 
                         int res = connexion.Execute(queryJeux, jeu);
                         if (res != 1)
                         {
@@ -450,7 +455,7 @@ namespace WebApplication1.Controllers
                             if (res != jeu.idThemes.Count)
                             {
                                 transaction.Rollback();
-                                throw new Exception("Erreur pendant la mise à jour du jeux. Veuillez réessayer plus tard. Si le problème persiste merci de contacter l'administrateur.");
+                                throw new Exception("Erreur pendant la mise à jour du jeu. Veuillez réessayer plus tard. Si le problème persiste merci de contacter l'administrateur.");
                             }
 
                             List<object> listType = new List<object>();
@@ -462,7 +467,7 @@ namespace WebApplication1.Controllers
                             if (res != jeu.idTypes.Count)
                             {
                                 transaction.Rollback();
-                                throw new Exception("Erreur pendant la mise à jour du jeux. Veuillez réessayer plus tard. Si le problème persiste merci de contacter l'administrateur.");
+                                throw new Exception("Erreur pendant la mise à jour du jeu. Veuillez réessayer plus tard. Si le problème persiste merci de contacter l'administrateur.");
                             }
 
                             transaction.Commit();
@@ -496,6 +501,7 @@ namespace WebApplication1.Controllers
             }
 
         }
+        
         [HttpGet]
         public IActionResult Nouveau()
         {
@@ -505,7 +511,7 @@ namespace WebApplication1.Controllers
             return View("Editer", jeuViewModel);
         }
 
-
+        [ValidateAntiForgeryToken]
         [HttpPost]
         public IActionResult Nouveau([FromForm] Jeux jeu)
         {
@@ -608,8 +614,9 @@ namespace WebApplication1.Controllers
 
 
         }
+        [ValidateAntiForgeryToken]
         [HttpPost]
-        public IActionResult Supprimer([FromRoute] int id, [FromForm] int idJeu)
+        public IActionResult Supprimer([FromQuery] int id, [FromForm] int idJeu)
         {
             if (id != idJeu)
             {
@@ -620,10 +627,10 @@ namespace WebApplication1.Controllers
             string querySupprimerLiensTypes = "DELETE FROM jeux_type WHERE jeuid=@id;";
             string querySupprimerLiensThemes = "DELETE FROM jeux_theme WHERE jeuid=@id;";
             string queryUpdateCommentaire = "UPDATE commentaires SET  jeuid=null WHERE jeuid=@id";
-            string querySupprimerLivre = "DELETE FROM jeux WHERE jeuid=@id;";
+            string querySupprimerLivre = "DELETE FROM jeu WHERE jeuid=@id;";
 
-            string queryNombresThemes = "SELECT count(*) FROM jeu_theme WHERE jeuid=@id";
-            string queryNombresTypes = "SELECT count(*) FROM jeu_type WHERE jeuid=@id";
+            string queryNombresThemes = "SELECT count(*) FROM jeux_theme WHERE jeuid=@id";
+            string queryNombresTypes = "SELECT count(*) FROM jeux_type WHERE jeuid=@id";
             string queryNombresCommentaires = "SELECT count(*) FROM commentaires WHERE jeuid=@id";
 
             try

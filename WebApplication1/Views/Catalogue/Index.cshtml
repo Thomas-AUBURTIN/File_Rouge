@@ -11,33 +11,33 @@
 	@{
 		int max = (int)ViewData["i"] + 5;
 		int avant = (int)ViewData["i"] - 5;
-		int apres = (int)ViewData["i"] + 6;
+		int apres = (int)ViewData["i"] + 5;
 		int depart = (int)ViewData["i"];
-		
+
 		// Jeux.Sort((a, b) => a.titre.CompareTo(b.titre));
 	}
 	<form asp-controller="Catalogue" asp-action="Trie" asp method="post">
 		@* <label for=""></label>
 	<input type="radio" name="trie" value="" />	 *@
-@* 		<input type="hidden" name="sort" value="nom" />
+		@* 		<input type="hidden" name="sort" value="nom" />
 		<input type="submit" value="tri?}");par nom" /> *@
 
 		@* <label for=""></label>
 	<input type="radio" name="trie" value="" />	 *@
-@* 		<input type="hidden" nt" value="auteur" />
+		@* 		<input type="hidden" nt" value="auteur" />
 		<input type="submit" value="tri par auteurs" /> *@
 
 		<label asp-for="SelectedType"></label>
-		<select asp-for="SelectedType" asp-items="Model.ListTypes" ></select>
-		
+		<select asp-for="SelectedType" asp-items="Model.ListTypes"></select>
+
 
 		<label asp-for="SelectedTheme"></label>
-		<select asp-for="SelectedTheme" asp-items="Model.ListThemes" ></select>
-		
+		<select asp-for="SelectedTheme" asp-items="Model.ListThemes"></select>
+
 
 		<label asp-for="SelectedJoueur"></label>
 		<select asp-for="SelectedJoueur" asp-items="Model.ListJoueur"></select>
-		
+
 
 		<label asp-for="Selectedtemps"></label>
 		<select asp-for="Selectedtemps" asp-items="Model.ListTemps"></select>
@@ -51,12 +51,16 @@
 			{
 				<div class="game">
 					<p class="titre">@Model.ListJeux[i].titre</p>
-					<img class="image" src="~/img/jeu/@Model.ListJeux[i].image" alt="Alternate Text" />
+					<img class="image" src="@Model.ListJeux[i].image" alt="Alternate Text" />
 					<p>Description</p>
 					<p class="description">@Model.ListJeux[i].description</p>
 					<a asp-controller="Catalogue" asp-action="Detail" asp-route-id=@Model.ListJeux[i].jeuid>Détail</a>
 					<a asp-controller="Catalogue" asp-action="editer" asp-route-id=@Model.ListJeux[i].jeuid>éditer</a>
-					<a asp-controller="Gestion" asp-action="supprimer" asp-route-id=@Model.ListJeux[i].jeuid>supprimer</a>
+					<form class="formSupprLivre" asp-controller="Catalogue" asp-action=supprimer asp-route-id="@(Model.ListJeux[i].jeuid)" method="post">
+						<input type="submit" value="Supprimer">
+						<input type="hidden" asp-for="@Model.ListJeux[i].jeuid" name="idJeu">
+					</form>
+
 				</div>
 			}
 			catch { }
