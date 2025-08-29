@@ -56,7 +56,7 @@
 					<p class="description">@Model.ListJeux[i].description</p>
 					<a asp-controller="Catalogue" asp-action="Detail" asp-route-id=@Model.ListJeux[i].jeuid>Détail</a>
 					<a asp-controller="Catalogue" asp-action="editer" asp-route-id=@Model.ListJeux[i].jeuid>éditer</a>
-					<form class="formSupprLivre" asp-controller="Catalogue" asp-action=supprimer asp-route-id="@(Model.ListJeux[i].jeuid)" method="post">
+					<form class="formSupprJeux" asp-controller="Catalogue" asp-action=supprimer asp-route-id="@(Model.ListJeux[i].jeuid)" method="post">
 						<input type="submit" value="Supprimer">
 						<input type="hidden" asp-for="@Model.ListJeux[i].jeuid" name="idJeu">
 					</form>

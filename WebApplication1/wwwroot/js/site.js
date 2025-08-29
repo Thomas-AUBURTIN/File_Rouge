@@ -3,13 +3,13 @@
 
 // Write your JavaScript code.
 function DemanderConfirmation(event) {
-    let rep = confirm("Voulez vous vraiment supprimer ce livre ?");
+    let rep = confirm("Voulez vous vraiment supprimer ce jeux ?");
     if (rep != true) {
         event.preventDefault();
     }
 }
 
-let formsSupprLivre = document.getElementsByClassName("formSupprLivre");
+let formsSupprLivre = document.getElementsByClassName("formSupprJeux");
 Array.from(formsSupprLivre).forEach(form => {
     form.addEventListener("submit", DemanderConfirmation)
 });

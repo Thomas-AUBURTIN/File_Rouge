@@ -627,7 +627,7 @@ namespace WebApplication1.Controllers
             string querySupprimerLiensTypes = "DELETE FROM jeux_type WHERE jeuid=@id;";
             string querySupprimerLiensThemes = "DELETE FROM jeux_theme WHERE jeuid=@id;";
             string queryUpdateCommentaire = "UPDATE commentaires SET  jeuid=null WHERE jeuid=@id";
-            string querySupprimerLivre = "DELETE FROM jeu WHERE jeuid=@id;";
+            string querySupprimerJeux = "DELETE FROM jeux WHERE jeuid=@id;";
 
             string queryNombresThemes = "SELECT count(*) FROM jeux_theme WHERE jeuid=@id";
             string queryNombresTypes = "SELECT count(*) FROM jeux_type WHERE jeuid=@id";
@@ -671,12 +671,19 @@ namespace WebApplication1.Controllers
                             throw new Exception("Problème pendant la suppression. Veuillez réessayer plus tard. ");
                         }
 
-                        // suppression du livre
-                        res = connexion.Execute(querySupprimerLivre, new { id = id });
+                        //Verification de si la cover existe ou non !
+                        string queryimage = "SELECT image from Jeux where jeuid=@id";
+                        string image = connexion.ExecuteScalar<string>(queryimage, new { id = id });
+                        // suppression du jeux
+                        res = connexion.Execute(querySupprimerJeux, new { id = id });
                         if (res != 1)
                         {
                             transaction.Rollback();
                             throw new Exception("Problème pendant la suppression. Veuillez réessayer plus tard. ");
+                        }
+                        if (image is not null && System.IO.File.Exists("wwwroot" + image))
+                        {
+                            System.IO.File.Delete("wwwroot" + image);
                         }
                         transaction.Commit();
                     }
