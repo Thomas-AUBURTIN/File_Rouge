@@ -4,13 +4,15 @@
 *@
 @{
 
+	ViewData["Title"] = "Détails";
+
 }
 @{
 	Layout = "~/Views/Shared/_LayoutSite.cshtml";
 }
 <div class="detail">
 	<h1>@Model.titre</h1>
-	<img src="~/img/jeu/@Model.image" />
+	<img src="@Model.image" />
 	<p class="description">@Model.description</p>
 	<p>nombre de joueur conseiller : @Model.nombrejoueursrecommandes</p>
 	<p>temps de jeu moyen : @Model.tempsjeumoyen</p>
@@ -32,19 +34,31 @@
 		
 	</ul>
 	<ul>
-		Type :
-		@foreach (Commentaire commentaire in @Model.commentaires)
+		Commentaire :
+		@foreach (Commentaire comm in @Model.commentaires)
 		{
 			<li>
-				<p>@commentaire.commentaire</p>
-				<p>@commentaire.utilisateurId - @commentaire.datecommentaires</p>
+				<p>@comm.commentaire</p>
+				<p>@comm.utilisateurNom - @comm.datecommentaires</p>
 				</li>
 
 		}
 		
 	</ul>
+	@{
+		bool commentaire = (bool)ViewData["comm"];
 
+		if(commentaire)
+		{
+			<a asp-controller="Catalogue" asp-action="FaireCommentaire" asp-route-id="@Model.jeuid"> faire un commentaire
+			</a>
+		}
+		else
+		{
+			<p>faire un commentaire</p>
+		}
 
+	}
 
 	
 </div>

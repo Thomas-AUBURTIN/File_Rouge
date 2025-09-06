@@ -1,31 +1,22 @@
-﻿@using WebApplication1.ViewModels;
-@model CatalogueViewModel;
+﻿@model CatalogueViewModel;
 
 <div class="catalogue">
 	@{
-		ViewData["Title"] = "Legal Policy";
+
 	}
 	@{
 		Layout = "~/Views/Shared/_LayoutSite.cshtml";
 	}
 	@{
+		ViewData["Title"] = "Catalogue de jeu";
 		int max = (int)ViewData["i"] + 5;
 		int avant = (int)ViewData["i"] - 5;
 		int apres = (int)ViewData["i"] + 5;
 		int depart = (int)ViewData["i"];
 
-		// Jeux.Sort((a, b) => a.titre.CompareTo(b.titre));
 	}
 	<form asp-controller="Catalogue" asp-action="Trie" asp method="post">
-		@* <label for=""></label>
-	<input type="radio" name="trie" value="" />	 *@
-		@* 		<input type="hidden" name="sort" value="nom" />
-		<input type="submit" value="tri?}");par nom" /> *@
 
-		@* <label for=""></label>
-	<input type="radio" name="trie" value="" />	 *@
-		@* 		<input type="hidden" nt" value="auteur" />
-		<input type="submit" value="tri par auteurs" /> *@
 
 		<label asp-for="SelectedType"></label>
 		<select asp-for="SelectedType" asp-items="Model.ListTypes"></select>
@@ -42,30 +33,6 @@
 		<label asp-for="Selectedtemps"></label>
 		<select asp-for="Selectedtemps" asp-items="Model.ListTemps"></select>
 		<button type="submit">Valider</button>
-	</form>
-
-	<div class="liste-jeux">
-		@for (var i = depart; i < max; i++)
-		{
-			try
-			{
-				<div class="game">
-					<p class="titre">@Model.ListJeux[i].titre</p>
-					<img class="image" src="@Model.ListJeux[i].image" alt="Alternate Text" />
-					<p>Description</p>
-					<p class="description">@Model.ListJeux[i].description</p>
-					<a asp-controller="Catalogue" asp-action="Detail" asp-route-id=@Model.ListJeux[i].jeuid>Détail</a>
-					<a asp-controller="Catalogue" asp-action="editer" asp-route-id=@Model.ListJeux[i].jeuid>éditer</a>
-					<form class="formSupprJeux" asp-controller="Catalogue" asp-action=supprimer asp-route-id="@(Model.ListJeux[i].jeuid)" method="post">
-						<input type="submit" value="Supprimer">
-						<input type="hidden" asp-for="@Model.ListJeux[i].jeuid" name="idJeu">
-					</form>
-
-				</div>
-			}
-			catch { }
-
-		}
 		<div class="bar-button">
 			@if (avant >= 1)
 			{
@@ -76,7 +43,7 @@
 				<button>avant</button>
 			}
 
-			@if (max <= Math.Round(@Model.ListJeux.Count / 5.0, 1) * 5)
+			@if (max < Math.Round(@Model.ListJeux.Count / 5.0, 1) * 5)
 			{
 				<button><a asp-controller="Catalogue" asp-action="Index" asp-route-i=@apres>suite</a></button>
 			}
@@ -85,6 +52,41 @@
 				<button>suite</button>
 			}
 		</div>
+	</form>
+
+
+	<div class="liste-jeux">
+		@for (var i = depart; i < max; i++)
+		{
+			try
+			{
+				if (@Model.ListJeux[i].titre != null)
+				{
+					<div class="game">
+						<p class="titre">@Model.ListJeux[i].titre</p>
+						<img class="image" src="@Model.ListJeux[i].image" alt="Alternate Text" />
+						<p>Description</p>
+						<p class="description">@Model.ListJeux[i].description</p>
+						<a asp-controller="Catalogue" asp-action="Detail" asp-route-id=@Model.ListJeux[i].jeuid>Détail</a>
+
+						@if (User.IsInRole("Admin"))
+						{
+							<a asp-controller="Catalogue" asp-action="Editer" asp-route-id=@Model.ListJeux[i].jeuid>éditer</a>
+
+
+
+							<form class="formSupprJeux" asp-controller="Catalogue" asp-action=supprimer asp-route-id="@(Model.ListJeux[i].jeuid)" method="post">
+								<input type="submit" value="Supprimer">
+								<input type="hidden" asp-for="@Model.ListJeux[i].jeuid" name="idJeu">
+							</form>
+						}
+					</div>
+				}
+			}
+			catch { }
+
+		}
+
 
 	</div>
 </div>

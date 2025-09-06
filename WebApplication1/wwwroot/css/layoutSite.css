@@ -14,6 +14,17 @@ header {
     display: flex;
     flex-direction: column;
 }
+nav a{
+    text-transform:none;
+    color:black;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+
+}
+nav  {
+    display:flex;
+    ]
+
+}
 
 .top-header {
     position: fixed;
@@ -24,7 +35,7 @@ header {
     justify-content: space-around;
     align-items: center;
     padding-right: 2em;
-    border: 2px solid blue;
+    
 }
 
 #logo {

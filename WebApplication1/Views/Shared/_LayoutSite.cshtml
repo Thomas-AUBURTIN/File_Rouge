@@ -16,9 +16,16 @@
 	<header>
 		<div class="top-header">
 			<img src="~/img/site/webclip-Photoroom.png" alt="logo" id="logo">
+			<h1>LES MAUVAIS JOUEURS</h1>
 			<nav>
 				<a asp-controller="Catalogue" asp-action="index">Catalogue de jeu</a>
 				<a asp-controller="Catalogue" asp-action="Nouveau">Nouveau</a>
+				@if (User.Identity.IsAuthenticated)
+				{
+					<a asp-controller="Access" asp-action="SignOut">Se déconnecter</a>
+
+				}
+
 			</nav>
 		</div>
 

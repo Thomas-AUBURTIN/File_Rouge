@@ -1,0 +1,56 @@
+﻿@model ConnectionViewModel;
+@{
+	var Now = DateTime.Now;
+	var eye = $"js/eye.js?q={Now.Ticks}";
+	var slide = $"js/slide.js?q={Now.Ticks}";
+
+	ViewData["Title"] = "Login";
+}
+
+<div class="index">
+	<script src="@slide" defer></script>
+	<script src="@eye" defer></script> 
+
+	<form asp-controller="Access" asp-action="SignIn" method="post">
+		<label asp-for="@Model.Utilisateur.pseudo">Pseudo :</label>
+		<input asp-for="@Model.Utilisateur.pseudo" />
+		<br>
+
+		
+		<div class="div-eye">
+			<label asp-for="@Model.Utilisateur.motdePasse">Mot de passe :</label>
+			<input asp-for="@Model.Utilisateur.motdePasse" />
+			<img src="./img/site/oeil.png" alt="" id="eye">
+		</div>
+
+		<hr>
+		@if (User?.Identity?.IsAuthenticated == false)
+			@if (User?.Identity != null && !User.Identity.IsAuthenticated)
+			{
+				<p>ou <a asp-controller="Access" asp-action="SignUp">s'inscrire</a></p>
+			}
+
+		<input type="submit">
+	</form>
+	@{
+		<p style="red bold ">@ViewData["ValidateMessage"]</p>
+	}
+	<aside id="top">
+		<h2>jeu au top</h2>
+		<div class="white container-slide">
+			@foreach (var jeux in @Model.ListJeux!)
+			{
+				<img class="slides" src="@(jeux.image)">
+			}
+		</div>
+		<button class="fleche-gauche" onclick="plusSlides(-1)">&#10094;</button>
+		<button class="fleche-droite" onclick="plusSlides(+1)">&#10095;</button>
+		<div style="text-align:center">
+			<span class="dot" onclick="currentSlide(0)"></span>
+			<span class="dot" onclick="currentSlide(1)"></span>
+			<span class="dot" onclick="currentSlide(2)"></span>
+			<span class="dot" onclick="currentSlide(3)"></span>
+		</div>
+	</aside>
+</div>
+

@@ -1,31 +1,38 @@
-﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
-using WebApplication1.Models;
+﻿using System.Data;
+using System.Diagnostics;
 using Dapper;
-using Npgsql;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Npgsql;
+using WebApplication1.Models;
 using WebApplication1.ViewModels;
-using System.Data;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+
 
 namespace WebApplication1.Controllers
 {
+    // Contrôleur pour la gestion du catalogue de jeux
+    [Authorize(Roles = "User")]
+
     public class CatalogueController : Controller
     {
-        //// attribut stockant la chaîne de connexion à la base de données
+        // Chaîne de connexion à la base de données
         private readonly string _connexionString;
 
+        // Constructeur : récupère la chaîne de connexion depuis la configuration
         public CatalogueController(IConfiguration configuration)
         {
-            // récupération de la chaîne de connexion dans la configuration
             _connexionString = configuration.GetConnectionString("GestionBibliotheque")!;
-            // si la chaîne de connexionn'a pas été trouvé => déclenche une exception => code http 500 retourné
             if (_connexionString == null)
             {
                 throw new Exception("Error : Connexion string not found ! ");
             }
         }
-        
+
+        // Affiche la liste des jeux, triés par titre
         public IActionResult Index(int i, string sort)
         {
             string query = "select J.* from jeux J order by J.TITRE";
@@ -35,23 +42,29 @@ namespace WebApplication1.Controllers
                 catalogue_jeux.ListJeux = connexion.Query<Jeux>(query).ToList();
             }
 
+            // Récupère les types et thèmes pour les filtres
             catalogue_jeux = getTypesThemes(catalogue_jeux);
 
             ViewData["i"] = i;
             return View(catalogue_jeux);
         }
+
+        // Affiche la page d'erreur
         [ValidateAntiForgeryToken]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        // Trie les jeux selon les filtres sélectionnés (thème, type, nombre de joueurs, temps)
         [ValidateAntiForgeryToken]
         [HttpPost]
         public IActionResult Trie([FromForm] CatalogueViewModel typejeux)
         {
             CatalogueViewModel Jeutrie = new CatalogueViewModel();
 
+            // Construction dynamique de la requête SQL selon les filtres
             string querytrie = "select distinct j.*   from JEUX j  join JEUX_THEME jt1 on j.JEUID = jt1.JEUID  join THEME T1 on t1.THEMEID  = jt1.THEMEID  join JEUX_type jt2 on j.JEUID = jt2.JEUID  join Types T2 on t2.TYPEID = jt2.TYPEID  where";
             bool first = true;
             if (typejeux.SelectedTheme != null)
@@ -60,33 +73,27 @@ namespace WebApplication1.Controllers
                 else { querytrie += " and "; }
                 querytrie += " t1.themeid = @theme ";
             }
-            ;
             if (typejeux.SelectedType != null)
             {
                 if (first) { first = false; }
                 else { querytrie += " and "; }
                 querytrie += " t2.typeid = @type ";
             }
-            ;
             if (typejeux.SelectedJoueur != null)
             {
                 if (first) { first = false; }
                 else { querytrie += " and "; }
                 querytrie += " j.nombrejoueursrecommandes = @joueur ";
             }
-            ;
             if (typejeux.Selectedtemps != null)
             {
                 if (first) { first = false; }
                 else { querytrie += " and "; }
                 querytrie += " j.tempsjeumoyen = @temps ";
             }
-            ;
             querytrie += "  order by j.titre; ";
 
-
-
-
+            // Exécution de la requête avec gestion des exceptions
             using (var connexion = new NpgsqlConnection(_connexionString))
             {
                 try
@@ -98,8 +105,6 @@ namespace WebApplication1.Controllers
                         joueur = string.IsNullOrEmpty(typejeux.SelectedJoueur) ? (int?)null : int.Parse(typejeux.SelectedJoueur),
                         temps = string.IsNullOrEmpty(typejeux.Selectedtemps) ? (int?)null : int.Parse(typejeux.Selectedtemps)
                     }).ToList();
-
-
                 }
                 catch (Exception ex)
                 {
@@ -107,256 +112,257 @@ namespace WebApplication1.Controllers
                     throw new Exception("Les données rentrées ne sont pas correctes, veuillez réessayer.");
                 }
             }
-            ;
             Jeutrie = getTypesThemes(Jeutrie);
             ViewData["i"] = 0;
             return View("Index", Jeutrie);
         }
 
-
-
-
+        // Récupère les listes de thèmes, types, joueurs et temps pour les filtres du catalogue
         [ValidateAntiForgeryToken]
         public CatalogueViewModel getTypesThemes(CatalogueViewModel listjeux)
         {
-
-
-
+            // Ajoute les options par défaut
             listjeux.ListThemes.Add(new SelectListItem("--Choix tu trie--", ""));
             listjeux.ListTypes.Add(new SelectListItem("--Choix tu trie--", ""));
             listjeux.ListJoueur.Add(new SelectListItem("--Choix tu trie--", ""));
             listjeux.ListTemps.Add(new SelectListItem("--Choix tu trie--", ""));
 
-
+            // Récupère les thèmes disponibles
+            using (var connexion = new NpgsqlConnection(_connexionString))
             {
-
-                using (var connexion = new NpgsqlConnection(_connexionString))
+                string queryThemes = "select distinct j.themeid , t.nom from jeux_theme j   join THEME t on j.themeid=t.themeid order by themeid ";
+                List<Theme> Themes = connexion.Query<Theme>(queryThemes).ToList();
+                foreach (Theme Theme in Themes)
                 {
-                    string queryThemes = "select distinct j.themeid , t.nom from jeux_theme j   join THEME t on j.themeid=t.themeid order by themeid ";
-                    List<Theme> Themes = connexion.Query<Theme>(queryThemes).ToList();
-                    foreach (Theme Theme in Themes)
-                    {
-                        listjeux.ListThemes.Add(new SelectListItem(Theme.nom, Theme.themeId.ToString()));
-                    }
-
+                    listjeux.ListThemes.Add(new SelectListItem(Theme.nom, Theme.themeId.ToString()));
                 }
-
-                using (var connexion = new NpgsqlConnection(_connexionString))
-                {
-                    string queryTypes = "select distinct j.TYPEID  , t.nom from JEUX_TYPE  j   join types t on j.typeid=t.typeid order by typeid ";
-                    List<JeuxType> Types = connexion.Query<JeuxType>(queryTypes).ToList();
-                    foreach (JeuxType type in Types)
-                    {
-                        listjeux.ListTypes.Add(new SelectListItem(type.nom, type.typeId.ToString()));
-                    }
-
-
-                }
-
-                using (var connexion = new NpgsqlConnection(_connexionString))
-                {
-                    string queryTemps = "select distinct tempsjeumoyen from JEUX order by TEMPSJEUMOYEN  ";
-                    List<int> Temps = connexion.Query<int>(queryTemps).ToList();
-                    foreach (int temp in Temps)
-                    {
-                        listjeux.ListTemps.Add(new SelectListItem(temp.ToString(), temp.ToString()));
-                    }
-
-
-                }
-                using (var connexion = new NpgsqlConnection(_connexionString))
-                {
-                    string queryJoueurs = "select distinct NOMBREJOUEURSRECOMMANDES  from JEUX order by NOMBREJOUEURSRECOMMANDES   ";
-                    List<int> Joueurs = connexion.Query<int>(queryJoueurs).ToList();
-                    foreach (int Joueur in Joueurs)
-                    {
-                        listjeux.ListJoueur.Add(new SelectListItem(Joueur.ToString(), Joueur.ToString()));
-                    }
-
-
-                }
-                return listjeux;
-
-
             }
+
+            // Récupère les types disponibles
+            using (var connexion = new NpgsqlConnection(_connexionString))
+            {
+                string queryTypes = "select distinct j.TYPEID  , t.nom from JEUX_TYPE  j   join types t on j.typeid=t.typeid order by typeid ";
+                List<JeuxType> Types = connexion.Query<JeuxType>(queryTypes).ToList();
+                foreach (JeuxType type in Types)
+                {
+                    listjeux.ListTypes.Add(new SelectListItem(type.nom, type.typeId.ToString()));
+                }
+            }
+
+            // Récupère les temps de jeu disponibles
+            using (var connexion = new NpgsqlConnection(_connexionString))
+            {
+                string queryTemps = "select distinct tempsjeumoyen from JEUX order by TEMPSJEUMOYEN  ";
+                List<int> Temps = connexion.Query<int>(queryTemps).ToList();
+                foreach (int temp in Temps)
+                {
+                    listjeux.ListTemps.Add(new SelectListItem(temp.ToString(), temp.ToString()));
+                }
+            }
+
+            // Récupère les nombres de joueurs disponibles
+            using (var connexion = new NpgsqlConnection(_connexionString))
+            {
+                string queryJoueurs = "select distinct NOMBREJOUEURSRECOMMANDES  from JEUX order by NOMBREJOUEURSRECOMMANDES   ";
+                List<int> Joueurs = connexion.Query<int>(queryJoueurs).ToList();
+                foreach (int Joueur in Joueurs)
+                {
+                    listjeux.ListJoueur.Add(new SelectListItem(Joueur.ToString(), Joueur.ToString()));
+                }
+            }
+            return listjeux;
         }
-        [ValidateAntiForgeryToken]
+
+        // Affiche le détail d'un jeu (avec ses thèmes, types et commentaires)
+
         public IActionResult Detail(int id)
         {
-
             Jeux jeu;
-            string queryjeux = "select j.*,t1.*,t2.* ,c.* from jeu j join JEUX_THEME JT1 on j.JEUID = jt1.JEUID join theme t1 on t1.THEMEID  = jt1.THEMEID join JEUX_TYPE JT2 on j.JEUID = jt2.JEUID join types t2 on t2.typeID  = jt2.typeID join COMMENTAIRES C  on c.JEUID = j.JEUID  where j.JEUID = @id";
+            string queryjeux = "select j.*,t1.*,t2.* ,c.* from jeux j join JEUX_THEME JT1 on j.JEUID = jt1.JEUID join theme t1 on t1.THEMEID  = jt1.THEMEID join JEUX_TYPE JT2 on j.JEUID = jt2.JEUID join types t2 on t2.typeID  = jt2.typeID join COMMENTAIRES C  on c.JEUID = j.JEUID  where j.JEUID = @id";
             List<Jeux> jeux;
             using (var connexion = new NpgsqlConnection(_connexionString))
             {
                 try
                 {
-
+                    // Mapping des objets liés (thème, type, commentaire)
                     jeux = connexion.Query<Jeux, Theme, JeuxType, Commentaire, Jeux>(queryjeux,
                     (jeu, theme, type, commentaire) =>
                     {
                         jeu.themes.Add(theme);
                         jeu.types.Add(type);
                         jeu.commentaires.Add(commentaire);
-
                         return jeu;
                     }, new { id = id },
                     splitOn: "themeid,typeid,jeuid"
                     ).ToList();
-
                 }
                 catch (System.Exception ex)
                 {
                     return NotFound();
                 }
 
+                // Regroupe les données pour éviter les doublons
                 jeu = jeux.GroupBy(j => j.jeuid).Select(g =>
                 {
                     Jeux groupedJeu = g.First();
-                    if (groupedJeu.commentaires.Count != 0)
-                    {
-                        groupedJeu.commentaires = g.Select(j => j.commentaires.Single())
-                        .DistinctBy((c) => c.jeuId) // pour ne pas avoir de doublon sur la catégories on le distinct by 
-                                                    .ToList();
-                    }
+                    groupedJeu.commentaires = g
+                        .SelectMany(j => j.commentaires)
+                        .Where(c => c != null)
+                        .DistinctBy(c => new { c.jeuId, c.utilisateurId, c.commentaire, c.datecommentaires })
+                        .ToList();
+                
                     if (groupedJeu.types.Count != 0)
                     {
                         groupedJeu.types = g.Select(j => j.types.Single())
-                                                    .DistinctBy((c) => c.typeId) // pour ne pas avoir de doublon sur la catégories on le distinct by 
+                                                    .DistinctBy((c) => c.typeId)
                                                     .ToList();
-
                     }
                     if (groupedJeu.themes.Count != 0)
                     {
                         groupedJeu.themes = g.Select(j => j.themes.Single())
-                                                    .DistinctBy((c) => c.themeId) // pour ne pas avoir de doublon sur la catégories on le distinct by 
+                                                    .DistinctBy((c) => c.themeId)
                                                     .ToList();
-
                     }
                     return groupedJeu;
                 }).First();
-                return View(jeu);
+
+                string querycommentaires = "select * from COMMENTAIRES where JEUID = @jeuid and UTILISATEURID = @utilid;";
+                var user = HttpContext.User;
+                string? userId = user?.Claims?.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                int utilid = int.Parse(userId);
+
+                using (var connexioncommentaire = new NpgsqlConnection(_connexionString))
+                {
+                    var commentaire = connexioncommentaire.QueryFirstOrDefault(querycommentaires, new
+                    {
+                        jeuid = id,
+                        utilid = utilid
+
+
+                    });
+                    if (commentaire == null)
+                    {
+                        ViewData["comm"] = true;
+
+                        return View(jeu);
+                    }
+                    else
+                    {
+                        ViewData["comm"] = false;
+                        return View(jeu);
+                    }
+
+                }
             }
         }
+
+        // Récupère les listes de thèmes, types, joueurs et temps pour l'édition d'un jeu
         [ValidateAntiForgeryToken]
         public EditeurJeuViewModel getTypesThemes(EditeurJeuViewModel singleJeux)
         {
-
-
-
+            // Ajoute les options par défaut
             singleJeux.ListThemes.Add(new SelectListItem("--Choix tu trie--", ""));
             singleJeux.ListTypes.Add(new SelectListItem("--Choix tu trie--", ""));
             singleJeux.ListJoueur.Add(new SelectListItem("--Choix tu trie--", ""));
             singleJeux.ListTemps.Add(new SelectListItem("--Choix tu trie--", ""));
 
-
+            // Récupère les thèmes et coche ceux du jeu en cours d'édition
+            using (var connexion = new NpgsqlConnection(_connexionString))
             {
-
-                using (var connexion = new NpgsqlConnection(_connexionString))
+                string queryThemes = "select distinct j.themeid , t.nom from jeux_theme j   join THEME t on j.themeid=t.themeid order by themeid ";
+                List<Theme> Themes = connexion.Query<Theme>(queryThemes).ToList();
+                foreach (Theme Theme in Themes)
                 {
-
-
-
-                    string queryThemes = "select distinct j.themeid , t.nom from jeux_theme j   join THEME t on j.themeid=t.themeid order by themeid ";
-                    List<Theme> Themes = connexion.Query<Theme>(queryThemes).ToList();
-                    foreach (Theme Theme in Themes)
+                    bool selected = false;
+                    if (singleJeux.Jeu != null)
                     {
-                        bool selected = false;
-                        if (singleJeux.Jeu != null)
-                        {
-                            selected = singleJeux.Jeu.idThemes.Contains(Theme.themeId);
-                        }
-                        singleJeux.ListThemes.Add(new SelectListItem(Theme.nom, Theme.themeId.ToString(), selected));
+                        selected = singleJeux.Jeu.idThemes.Contains(Theme.themeId);
                     }
-
+                    singleJeux.ListThemes.Add(new SelectListItem(Theme.nom, Theme.themeId.ToString(), selected));
                 }
-
-                using (var connexion = new NpgsqlConnection(_connexionString))
-                {
-                    string queryTypes = "select distinct j.TYPEID  , t.nom from JEUX_TYPE  j   join types t on j.typeid=t.typeid order by typeid ";
-                    List<JeuxType> Types = connexion.Query<JeuxType>(queryTypes).ToList();
-                    foreach (JeuxType type in Types)
-                    {
-                        bool selected = false;
-                        if (singleJeux.Jeu != null)
-                        {
-                            selected = singleJeux.Jeu.idTypes.Contains(type.typeId) ? true : false;
-                        }
-                        singleJeux.ListTypes.Add(new SelectListItem(type.nom, type.typeId.ToString(), selected));
-                    }
-
-
-                }
-
-                using (var connexion = new NpgsqlConnection(_connexionString))
-                {
-                    string queryTemps = "select distinct tempsjeumoyen from JEUX order by TEMPSJEUMOYEN  ";
-                    List<int> Temps = connexion.Query<int>(queryTemps).ToList();
-                    foreach (int temp in Temps)
-                    {
-                        bool selected = false;
-                        if (singleJeux.Jeu != null)
-                        {
-                            selected = singleJeux.Jeu.tempsjeumoyen == temp ? true : false;
-                        }
-                        singleJeux.ListTemps.Add(new SelectListItem(temp.ToString(), temp.ToString(), selected));
-                    }
-
-
-                }
-                using (var connexion = new NpgsqlConnection(_connexionString))
-                {
-                    string queryJoueurs = "select distinct NOMBREJOUEURSRECOMMANDES  from JEUX order by NOMBREJOUEURSRECOMMANDES   ";
-                    List<int> Joueurs = connexion.Query<int>(queryJoueurs).ToList();
-                    foreach (int Joueur in Joueurs)
-                    {
-                        bool selected = false;
-                        if (singleJeux.Jeu != null)
-                        {
-                            selected = singleJeux.Jeu.nombrejoueursrecommandes == Joueur ? true : false;
-                        }
-                        singleJeux.ListJoueur.Add(new SelectListItem(Joueur.ToString(), Joueur.ToString(), selected));
-                    }
-
-
-
-                }
-                return singleJeux;
-
-
             }
+
+            // Récupère les types et coche ceux du jeu en cours d'édition
+            using (var connexion = new NpgsqlConnection(_connexionString))
+            {
+                string queryTypes = "select distinct j.TYPEID  , t.nom from JEUX_TYPE  j   join types t on j.typeid=t.typeid order by typeid ";
+                List<JeuxType> Types = connexion.Query<JeuxType>(queryTypes).ToList();
+                foreach (JeuxType type in Types)
+                {
+                    bool selected = false;
+                    if (singleJeux.Jeu != null)
+                    {
+                        selected = singleJeux.Jeu.idTypes.Contains(type.typeId) ? true : false;
+                    }
+                    singleJeux.ListTypes.Add(new SelectListItem(type.nom, type.typeId.ToString(), selected));
+                }
+            }
+
+            // Récupère les temps de jeu et coche celui du jeu en cours d'édition
+            using (var connexion = new NpgsqlConnection(_connexionString))
+            {
+                string queryTemps = "select distinct tempsjeumoyen from JEUX order by TEMPSJEUMOYEN  ";
+                List<int> Temps = connexion.Query<int>(queryTemps).ToList();
+                foreach (int temp in Temps)
+                {
+                    bool selected = false;
+                    if (singleJeux.Jeu != null)
+                    {
+                        selected = singleJeux.Jeu.tempsjeumoyen == temp ? true : false;
+                    }
+                    singleJeux.ListTemps.Add(new SelectListItem(temp.ToString(), temp.ToString(), selected));
+                }
+            }
+
+            // Récupère les nombres de joueurs et coche celui du jeu en cours d'édition
+            using (var connexion = new NpgsqlConnection(_connexionString))
+            {
+                string queryJoueurs = "select distinct NOMBREJOUEURSRECOMMANDES  from JEUX order by NOMBREJOUEURSRECOMMANDES   ";
+                List<int> Joueurs = connexion.Query<int>(queryJoueurs).ToList();
+                foreach (int Joueur in Joueurs)
+                {
+                    bool selected = false;
+                    if (singleJeux.Jeu != null)
+                    {
+                        selected = singleJeux.Jeu.nombrejoueursrecommandes == Joueur ? true : false;
+                    }
+                    singleJeux.ListJoueur.Add(new SelectListItem(Joueur.ToString(), Joueur.ToString(), selected));
+                }
+            }
+            return singleJeux;
         }
+
+        // Gère l'enregistrement de l'image de couverture d'un jeu
         private string ManageCover(IFormFile file)
         {
-
-            // vérification de la validité de l'image fournie pour la couverture
             string[] permittedExtensions = { ".jpeg", ".jpg", ".png", ".gif" };
-
             var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
 
+            // Vérifie l'extension du fichier
             if (string.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext))
             {
-                // cette ligne permet de mettre le message d'erreur au bon endroit dans la vue (c.a.d à côté du file picker)
                 ModelState["jeu.imageFile"]!.Errors.Add(new ModelError("Ce type de fichier n'est pas accepté."));
                 throw new Exception("Les données rentrées ne sont pas correctes, veuillez réessayer.");
             }
 
-            //  enregistrement de l'image sur le système de fichiers et création du chemin de l'image afin de l'enregistrer en BDD
+            // Génère un chemin de fichier unique
             string? filePath = Path.Combine("/img/jeu/",
                 Path.GetFileNameWithoutExtension(Path.GetRandomFileName()) + Path.GetExtension(file.FileName)).ToString();
 
+            // Sauvegarde le fichier sur le serveur
             using (var stream = System.IO.File.Create("wwwroot" + filePath))
             {
                 file.CopyTo(stream);
             }
             return filePath;
         }
+
+        // Affiche la page d'édition d'un jeu (GET)
         [HttpGet]
+
         public IActionResult Editer(int id)
         {
-
             using (var connexion = new NpgsqlConnection(_connexionString))
-
             {
                 Jeux groupedJeux = null;
                 EditeurJeuViewModel edit = new() { action = "Editer", titre = "Modification jeu", idJeu = id };
@@ -364,7 +370,7 @@ namespace WebApplication1.Controllers
                 List<Jeux> jeux;
                 try
                 {
-
+                    // Mapping des objets liés
                     jeux = connexion.Query<Jeux, Theme, JeuxType, Jeux>(queryjeux,
                     (jeu, theme, type) =>
                     {
@@ -372,18 +378,17 @@ namespace WebApplication1.Controllers
                         jeu.types.Add(type);
                         jeu.idTypes.Add(type.typeId);
                         jeu.idThemes.Add(theme.themeId);
-
                         return jeu;
                     }, new { id = id },
                     splitOn: "themeid,typeid"
                     ).ToList();
-
                 }
                 catch (System.Exception ex)
                 {
                     return NotFound();
                 }
 
+                // Regroupe les données pour l'affichage
                 edit.Jeu = jeux.GroupBy(l => l.jeuid).Select(g =>
                 {
                     groupedJeux = g.First();
@@ -398,8 +403,10 @@ namespace WebApplication1.Controllers
                 return View(edit);
             }
         }
-        
+
+        // Traite la soumission du formulaire d'édition d'un jeu (POST)
         [HttpPost]
+
         public IActionResult Editer([FromQuery] int id, [FromForm] Jeux jeu)
         {
             if (id != jeu.jeuid)
@@ -408,12 +415,13 @@ namespace WebApplication1.Controllers
             }
             try
             {
-                // vérification de la validité du model(livre)
+                // Vérifie la validité du modèle
                 if (!ModelState.IsValid)
                 {
                     throw new Exception("Les données rentrées ne sont pas correctes, veuillez réessayer.");
                 }
-                // gestion de la couverture si une image est fournie
+
+                // Gère la mise à jour de l'image si besoin
                 if (jeu.imageFile != null && jeu.imageFile.Length > 0)
                 {
                     if (System.IO.File.Exists("wwwroot/img/jeu/" + jeu.image))
@@ -422,6 +430,8 @@ namespace WebApplication1.Controllers
                     }
                     jeu.image = ManageCover(jeu.imageFile!);
                 }
+
+                // Requêtes SQL pour la mise à jour du jeu et de ses liens
                 string queryJeux = "UPDATE jeux SET titre=@titre, description=@description, image=@image, nombrejoueursrecommandes=@nombrejoueursrecommandes, tempsjeumoyen=@tempsjeumoyen WHERE jeuid=@jeuid";
                 string queryRemoveTypes = "DELETE FROM jeux_type WHERE jeuid=@id";
                 string queryRemoveThemes = "DELETE FROM jeux_theme WHERE jeuid=@id";
@@ -433,7 +443,7 @@ namespace WebApplication1.Controllers
                     connexion.Open();
                     using (var transaction = connexion.BeginTransaction())
                     {
-                        // modification jeu 
+                        // Met à jour le jeu
                         int res = connexion.Execute(queryJeux, jeu);
                         if (res != 1)
                         {
@@ -442,10 +452,11 @@ namespace WebApplication1.Controllers
                         }
                         else
                         {
-                            // suppression des anciennes catégories 
+                            // Supprime les anciens liens types/thèmes
                             connexion.Execute(queryRemoveTypes, new { id = id });
                             connexion.Execute(queryRemoveThemes, new { id = id });
 
+                            // Ajoute les nouveaux liens thèmes
                             List<object> listTheme = new List<object>();
                             foreach (int theme_id in jeu.idThemes)
                             {
@@ -458,6 +469,7 @@ namespace WebApplication1.Controllers
                                 throw new Exception("Erreur pendant la mise à jour du jeu. Veuillez réessayer plus tard. Si le problème persiste merci de contacter l'administrateur.");
                             }
 
+                            // Ajoute les nouveaux liens types
                             List<object> listType = new List<object>();
                             foreach (int type_id in jeu.idTypes)
                             {
@@ -471,7 +483,6 @@ namespace WebApplication1.Controllers
                             }
 
                             transaction.Commit();
-
                         }
                     }
                 }
@@ -481,13 +492,10 @@ namespace WebApplication1.Controllers
                 jeuViewModel = getTypesThemes(jeuViewModel);
 
                 return View("Editer", jeuViewModel);
-
             }
-
-
             catch (Exception e)
             {
-                // suppresion de la couverture dans le système de fichier si il y en a une
+                // Nettoie l'image si erreur
                 if (jeu.imageFile != null && System.IO.File.Exists("wwwroot" + jeu.image))
                 {
                     System.IO.File.Delete("wwwroot" + jeu.image);
@@ -497,12 +505,12 @@ namespace WebApplication1.Controllers
                 jeuViewModel = getTypesThemes(jeuViewModel);
                 ViewData["ValidateMessage"] = e.Message;
                 return View("Editer", jeuViewModel);
-
             }
-
         }
-        
+
+        // Affiche la page de création d'un nouveau jeu
         [HttpGet]
+
         public IActionResult Nouveau()
         {
             EditeurJeuViewModel jeuViewModel = new() { action = "Nouveau", titre = "Nouveau Livre" };
@@ -511,20 +519,21 @@ namespace WebApplication1.Controllers
             return View("Editer", jeuViewModel);
         }
 
+        // Traite la soumission du formulaire de création d'un nouveau jeu
         [ValidateAntiForgeryToken]
         [HttpPost]
+
         public IActionResult Nouveau([FromForm] Jeux jeu)
         {
-            
             try
             {
-                // vérification de la validité du model (livre)
+                // Vérifie la validité du modèle
                 if (!ModelState.IsValid)
                 {
                     throw new Exception("Les données rentrées ne sont pas correctes, veuillez réessayer.");
                 }
 
-                // vérification de la non existance du titre dans la bdd
+                // Vérifie l'unicité du titre
                 string queryTitre = "select j.* from JEUX j where j.titre = @titre;";
                 using (var connexion = new NpgsqlConnection(_connexionString))
                 {
@@ -534,14 +543,16 @@ namespace WebApplication1.Controllers
                         throw new Exception("Les données rentrées ne sont pas correctes, veuillez réessayer.");
                     }
                 }
-                // gestion de la couverture si une image est fournie
+
+                // Gère l'image si présente
                 if (jeu.imageFile != null && jeu.imageFile.Length > 0)
                 {
                     jeu.image = ManageCover(jeu.imageFile!);
                 }
 
                 jeu.dateajout = DateTime.Now;
-                // enregistrement du livre en BDD
+
+                // Requêtes SQL pour l'insertion du jeu et de ses liens
                 string queryJeu = "insert into jeux (TITRE, DESCRIPTION, image,NOMBREJOUEURSRECOMMANDES, TEMPSJEUMOYEN,DATEAJOUT) values (@titre, @description, @image, @nombrejoueursrecommandes, @tempsjeumoyen, @dateajout) RETURNING jeuid;";
                 string queryTypes = "INSERT INTO jeux_type (jeuid, typeid) VALUES (@jeuid,@typeid)";
                 string queryThemes = "INSERT INTO jeux_theme (jeuid, themeid) VALUES (@jeuid,@themeid)";
@@ -551,7 +562,7 @@ namespace WebApplication1.Controllers
                     connexion.Open();
                     using (var transaction = connexion.BeginTransaction())
                     {
-                        // insert du livre et récupération de son id
+                        // Insère le jeu
                         int jeu_id = connexion.ExecuteScalar<int>(queryJeu, jeu);
                         if (jeu_id == 0)
                         {
@@ -560,7 +571,7 @@ namespace WebApplication1.Controllers
                         }
                         else
                         {
-                            // ajout des associations avec les themes
+                            // Insère les liens thèmes
                             List<object> list = new List<object>();
                             foreach (int theme_id in jeu.idThemes)
                             {
@@ -572,7 +583,8 @@ namespace WebApplication1.Controllers
                                 transaction.Rollback();
                                 throw new Exception("Erreur pendant la création du jeu. Veuillez réessayer plus tard. Si le problème persiste merci de contacter l'administrateur.");
                             }
-                            // ajout des associations avec les catégories
+
+                            // Insère les liens types
                             list = new List<object>();
                             foreach (int type_id in jeu.idTypes)
                             {
@@ -587,7 +599,6 @@ namespace WebApplication1.Controllers
                             transaction.Commit();
                         }
                     }
-
                 }
                 ViewData["ValidateMessage"] = "Livre bien créé !";
                 EditeurJeuViewModel jeuViewModel = new() { action = "Nouveau", titre = "Nouveau Livre" };
@@ -597,7 +608,7 @@ namespace WebApplication1.Controllers
             }
             catch (Exception e)
             {
-                // suppresion de la couverture dans le système de fichier si il y en a une
+                // Nettoie l'image si erreur
                 if (jeu.imageFile != null && System.IO.File.Exists("wwwroot" + jeu.image))
                 {
                     System.IO.File.Delete("wwwroot" + jeu.image);
@@ -607,15 +618,13 @@ namespace WebApplication1.Controllers
                 jeuViewModel = getTypesThemes(jeuViewModel);
                 ViewData["ValidateMessage"] = e.Message;
                 return View("Editer", jeuViewModel);
-
-
-
             }
-
-
         }
+
+        // Supprime un jeu et ses liens (types, thèmes, commentaires)
         [ValidateAntiForgeryToken]
         [HttpPost]
+
         public IActionResult Supprimer([FromQuery] int id, [FromForm] int idJeu)
         {
             if (id != idJeu)
@@ -623,7 +632,7 @@ namespace WebApplication1.Controllers
                 return BadRequest();
             }
 
-            // requêtes SQL
+            // Requêtes SQL pour la suppression
             string querySupprimerLiensTypes = "DELETE FROM jeux_type WHERE jeuid=@id;";
             string querySupprimerLiensThemes = "DELETE FROM jeux_theme WHERE jeuid=@id;";
             string queryUpdateCommentaire = "UPDATE commentaires SET  jeuid=null WHERE jeuid=@id";
@@ -635,25 +644,22 @@ namespace WebApplication1.Controllers
 
             try
             {
-
-
                 using (var connexion = new NpgsqlConnection(_connexionString))
                 {
                     connexion.Open();
                     using (var transaction = connexion.BeginTransaction())
                     {
-                        // récupération du nombre de catégories du livre
+                        // Supprime les liens thèmes
                         int nbTheme = connexion.ExecuteScalar<int>(queryNombresThemes, new { id = id });
-                        // exécution de la req de suppression des catégories
                         int res = connexion.Execute(querySupprimerLiensThemes, new { id = id });
                         if (res != nbTheme)
                         {
                             transaction.Rollback();
                             throw new Exception("Problème pendant la suppression. Veuillez réessayer plus tard. ");
                         }
-                        // récupération du nombre de catégories du livre
+
+                        // Supprime les liens types
                         int nbType = connexion.ExecuteScalar<int>(queryNombresTypes, new { id = id });
-                        // exécution de la req de suppression des catégories
                         res = connexion.Execute(querySupprimerLiensTypes, new { id = id });
                         if (res != nbType)
                         {
@@ -661,9 +667,8 @@ namespace WebApplication1.Controllers
                             throw new Exception("Problème pendant la suppression. Veuillez réessayer plus tard. ");
                         }
 
-                        // récupération du nombre d'emprunts de ce livre
+                        // Met à jour les commentaires liés
                         int nbCommentaires = connexion.ExecuteScalar<int>(queryNombresCommentaires, new { id = id });
-                        // mise à jour des emprunts
                         res = connexion.Execute(queryUpdateCommentaire, new { id = id });
                         if (res != nbCommentaires)
                         {
@@ -671,10 +676,9 @@ namespace WebApplication1.Controllers
                             throw new Exception("Problème pendant la suppression. Veuillez réessayer plus tard. ");
                         }
 
-                        //Verification de si la cover existe ou non !
+                        // Supprime l'image du jeu si présente
                         string queryimage = "SELECT image from Jeux where jeuid=@id";
                         string image = connexion.ExecuteScalar<string>(queryimage, new { id = id });
-                        // suppression du jeux
                         res = connexion.Execute(querySupprimerJeux, new { id = id });
                         if (res != 1)
                         {
@@ -687,7 +691,6 @@ namespace WebApplication1.Controllers
                         }
                         transaction.Commit();
                     }
-
                 }
             }
             catch (Exception e)
@@ -698,6 +701,48 @@ namespace WebApplication1.Controllers
 
             TempData["ValidateMessage"] = "Suppression effectuée.";
             return RedirectToAction("Index");
+        }
+        public IActionResult FaireCommentaire(int id)
+        {
+            string query = "select titre from jeux where jeuid = @id";
+            using (var connexion = new NpgsqlConnection(_connexionString))
+            {
+                string? titre = connexion.Query(query, new { id = id }).ToString();
+                ViewData["titre"] = titre;
+                ViewData["id"] = id;
+            }
+            var user = HttpContext.User;
+            string? userId = user?.Claims?.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            ViewData["utilid"] = userId;
+            return View("commentaire");
+        }
+        public IActionResult EnvoyerCommentaire([FromForm] Commentaire comm)
+        {
+            string query = "insert into commentaires (jeuId, utilisateurId, commentaire, datecommentaires) values (@jeuId, @utilisateurId, @commentaire, @datecommentaires);";
+            using (var connexion = new NpgsqlConnection(_connexionString))
+            {
+                try
+                {
+                    int res = connexion.Execute(query, new
+                    {
+                        jeuId = comm.jeuId,
+                        utilisateurId = comm.utilisateurId,
+                        commentaire = comm.commentaire,
+                        datecommentaires = DateTime.UtcNow
+                    });
+                    if (res != 1)
+                    {
+                        throw new Exception("Erreur pendant l'ajout du commentaire. Veuillez réessayer plus tard. Si le problème persiste merci de contacter l'administrateur.");
+                    }
+                }
+                catch (Exception e)
+                {
+                    ViewData["ValidateMessage"] = e.Message;
+                    return View();
+                }
+                return RedirectToAction("Detail", new { id = comm.jeuId });
+
+            }
         }
     }
 }

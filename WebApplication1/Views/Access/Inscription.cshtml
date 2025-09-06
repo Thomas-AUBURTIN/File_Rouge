@@ -1,0 +1,47 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model Utilisateur
+@{
+    var Now = DateTime.Now;
+    var eye = $"js/eye.js?q={Now.Ticks}";
+    
+    ViewData["Title"] = "Inscription";
+}
+
+<script src="@eye" defer></script>
+
+<div class="inscription">
+        <form asp-controller="Access" asp-action="SignUp" method="post">
+            <label asp-for="@Model.nom"> nom : </label>
+            <input asp-for="@Model.nom">
+            <label asp-for="@Model.pseudo">pseudo : </label>
+            <input asp-for="@Model.pseudo">
+@*             <label for="pp"><img src="/img/site/upload.png" alt="">  photo de profil : </label>
+            <input type="file" name="pp" id="pp" accept="image/png, image/jpeg">
+            <img src="/img/site/image-profil-base.png" id="img-profil" alt=""> *@
+            <label asp-for="@Model.Telephone">Telephone : </label>
+            <input asp-for="@Model.Telephone">
+            <label asp-for="@Model.email">Email : </label>
+            <input asp-for="@Model.email">
+        <label asp-for="@Model.motdePasse">mot de passe : </label>
+            <div id="div-eye">
+            <input id="Utilisateur_motdePasse" asp-for="@Model.motdePasse">
+                <img src="../img/site/oeil.png" alt="" id="eye">
+            </div>
+
+            <input type="submit">
+        </form>
+        <button><a asp-controller="Connection" asp-action="index">retour</a></button>
+    </div>
+@{
+    <p>@ViewData["ValidateMessage"]</p>
+}
+    
+
+    
+
+
+
+
+
