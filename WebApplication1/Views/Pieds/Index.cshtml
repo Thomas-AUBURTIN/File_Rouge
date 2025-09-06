@@ -60,8 +60,15 @@
             <p>
                 Le site peut utiliser des cookies à des fins de statistiques ou de fonctionnement. En naviguant sur le site, l’utilisateur accepte leur utilisation. Il peut les désactiver via les paramètres de son navigateur.
             </p>
-        </article>
-        <button><a asp-controller="Connection" asp-action="index">retour</a></button>
+            @if (User?.Identity?.IsAuthenticated == false && User.Identity.IsAuthenticated)
+            {
+                <button><a asp-controller="Acceil" asp-action="index">retour</a></button>
+            }
+            else
+            {
+                <button><a asp-controller="Access" asp-action="index">retour</a></button>
+
+            }
     </div>
 
 }

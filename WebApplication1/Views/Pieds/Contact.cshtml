@@ -10,7 +10,7 @@
 				<input type="text" name="prenom" value="" id="Prenom" placeholder="prenom" />
 
 
-				<label class="padding"  for="Nom">Nom :</label>
+				<label class="padding" for="Nom">Nom :</label>
 				<input type="text" name="Nom" value="" id="Nom" placeholder="nom" />
 
 
@@ -24,7 +24,7 @@
 			</div>
 			<div class="center">
 				<div>
-					<input type="text" name="sujet" value="" placeholder="Sujet"/>
+					<input type="text" name="sujet" value="" placeholder="Sujet" />
 					<select name="theme" id="theme">
 						<option value="">--Choisir un sujet--</option>
 						<option value="reservation">reservation</option>
@@ -39,7 +39,15 @@
 			</div>
 
 		</form>
-		<button><a asp-controller="Connection" asp-action="index">retour</a></button>
+		@if (User?.Identity?.IsAuthenticated == true && User.Identity.IsAuthenticated)
+		{
+			<button><a asp-controller="Acceuil" asp-action="index">retour</a></button>
+		}
+		else
+		{
+			<button><a asp-controller="Access" asp-action="index">retour</a></button>
+
+		}
 	</div>
 	<script src="../js/insc.js" defer></script>
 

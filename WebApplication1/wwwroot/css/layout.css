@@ -55,13 +55,19 @@ h1 {
     padding: 5%;
     text-align: center;
 }
-
-@media (min-width: 600px) {
-    h1 {
-        padding: 0;
-    }
-
-    footer {
-        justify-content: end;
-    }
+#cookieConsent {
+    position: absolute;
+    padding: 1rem 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: .25rem;
 }
+    @media (min-width: 600px) {
+        h1 {
+            padding: 0;
+        }
+
+        footer {
+            justify-content: end;
+        }
+    }

@@ -11,9 +11,11 @@
 	Layout = "~/Views/Shared/_LayoutSite.cshtml";
 }
 <div class="detail">
+	<div>
 	<h1>@Model.titre</h1>
-	<img src="@Model.image" />
+	<img src="@Model.image" class="image" />
 	<p class="description">@Model.description</p>
+	</div>
 	<p>nombre de joueur conseiller : @Model.nombrejoueursrecommandes</p>
 	<p>temps de jeu moyen : @Model.tempsjeumoyen</p>
 	<ul>Theme :

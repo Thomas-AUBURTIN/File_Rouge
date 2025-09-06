@@ -18,55 +18,61 @@ html {
 }
 
 /*page index*/
-div.index {
+#index {
     height: 100vh;
     width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-content: space-around;
+    align-items: center;
     gap: 2%;
     flex-wrap: wrap;
     overflow: hidden;
 }
 
-    div.index h1 {
+    #index h1 {
         width: 100%;
         padding: 0;
         margin: 0;
         margin-bottom: 8%;
     }
 
-    div#index form h2,
-    div.index form div,
-    div.index form p {
+    #index form h2,
+    #index form div,
+    #index form p {
         text-align: center;
     }
 
-    div.index #se_loguer,
-    div.index #top {
+    #index #se_loguer,
+    #index #top {
         background-color: rgb(255, 255, 255, 0.7);
         width: 60%;
         border: 2px solid rgb(255, 255, 255);
         border-radius: 10px;
     }
 
-    div.index #se_loguer {
+    #index #se_loguer {
         display: flex;
         flex-direction: column;
         text-align: center;
-        align-items: start;
-        padding-left: 2.5em;
+
+        align-items: center;
         height: 40%;
-        padding-top: 10%;
+        margin-top: -21vh;
+        padding-top: 3vh;
+    }
+    #index .start {
+        display: flex;
+        flex-direction: column;
+        text-align: start;
     }
 
-    div.index [type] {
+    #index [type] {
         border-radius: 10px;
-        width: 11em;
+        width: 8em;
     }
 
-    div.index #top {
+    #index #top {
         width: 60vw;
         height: 30vh;
         display: flex;
@@ -75,53 +81,53 @@ div.index {
         align-items: center;
     }
 
-        div.index #top h2 {
+        #index #top h2 {
             margin: 0%;
         }
 
-    div.index .fleche-droite {
+    #index .fleche-droite {
         position: absolute;
         right: 22%;
         top: 70%;
         width: 1.5em;
     }
 
-    div.index .fleche-gauche {
+    #index .fleche-gauche {
         position: absolute;
         left: 22%;
         top: 70%;
         width: 1.5em;
     }
 
-    div.index #eye {
+    #index #eye {
         width: 20%;
         height: 80%;
     }
 
-    div.index .div-eye {
+    #index .div-eye {
         display: flex;
         align-items: center;
     }
 
-    div.index .slides {
+    #index .slides {
         position: relative;
         height: 9vh;
         width: 9vw;
     }
 
-    div.index .container-slide {
+    #index .container-slide {
         display: flex;
         justify-content: center;
         align-items: center;
     }
 
-    div.index .slides {
+    #index .slides {
         height: 10em;
         width: 12em;
     }
 
 
-    div.index .dot {
+    #index .dot {
         cursor: pointer;
         height: 15px;
         width: 15px;
@@ -131,10 +137,14 @@ div.index {
         display: inline-block;
         transition: background-color 0.6s ease;
     }
-        div.index .active, div.index .dot:hover {
+        #index .active, #index .dot:hover {
             background-color: #717171;
         }
 
+.fusion {
+    grid-column-start: 1;
+    grid-column-end: 3;
+}
 /* Fading animation */
 .fade {
     animation-name: fade;
@@ -152,7 +162,7 @@ div.index {
 }
 
 @media (min-width: 600px) {
-    div.index {
+    #index index {
         height: 100%;
         width: 100%;
         display: grid;
@@ -163,476 +173,66 @@ div.index {
         align-items: center;
     }
 
-        div.index #se_loguer {
-            width: 36%;
-            height: 94%;
-            text-align: center;
-            padding-top: 4%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        div.index #top {
-            width: 28%;
-            height: 85%
-        }
-
-        div.index .fleche-droite {
-            right: 38%;
-            width: 3em;
-            top: 78%;
-        }
-
-        div.index .fleche-gauche {
-            left: 38%;
-            width: 3em;
-            top: 78%;
-        }
-
-        div.index h1 {
-            padding: 0;
-        }
-
-        div.index footer {
-            justify-content: right;
-        }
-
-        div.index .slides {
-            position: relative;
-            height: 10em;
-            width: 12em;()
-        }
-
-        div.index [type] {
-            width: 17em;
-        }
-
-        div.index #eye {
-            width: 10%;
-            height: 80%;
-            position: absolute;
-            height: 3em;
-            width: 3em;
-            right: 39%;
-        }
-
-    /*fin page index*/
-}
-
-/*page privacy*/
-div.privacy {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    align-items: center;
-    gap: 2%;
-    overflow: scroll;
-    scroll-behavior: smooth;
-}
-
-
-    div.privacy button, div.privacy article {
-        background-color: rgb(255, 255, 255, 0.7);
-        width: 60%;
-        border: 2px solid rgb(255, 255, 255);
-        border-radius: 10px;
-    }
-
-    div.privacy article {
-        margin: 1%;
-        width: 90%;
-    }
-
-@media (min-width: 768px) {
-    div.privacy button {
-        width: 20%;
-    }
-}
-
-/*fin page privacy*/
-
-/*page inscription*/
-div.inscription form {
-    display: grid;
-    grid-auto-flow: row;
-    grid-template: 1fr 1fr 1fr 1fr 1fr 1fr/ 50% 50%;
-    justify-content: end;
-    align-items: center;
-    background-color: rgb(255, 255, 255, 0.7);
-    margin: 1vh;
-    height: 90%;
-    width: 90%;
-    border: 2px solid rgb(255, 255, 255);
-    border-radius: 10px;
-    gap: 1%;
-}
-
-div.inscription {
-    position: fixed;
-    top: 10vh;
-    height: 85vh;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-    div.inscription #div-eye {
-        display: flex;
-        justify-content: left;
-        align-items: center;
-    }
-
-    div.inscription #eye {
-        width: 15%;
-    }
-
-    div.inscription label {
-        justify-self: end;
-    }
-
-    div.inscription input {
-        height: 1.2em;
-        width: 70%;
-    }
-
-        div.inscription input[type="submit"] {
-            grid-column: 1 / span 2;
-            justify-self: center;
-            width: 20%;
-        }
-
-        div.inscription input[type="file"] {
-            display: none;
-        }
-
-    div.inscription label[for="pp"] {
-        display: flex;
-        align-items: center;
-    }
-
-    div.inscription img#img-profil {
-        height: 50%;
-    }
-
-@media (min-width: 600px) {
-    div .inscription #eye {
-        width: 10%;
-    }
-
-    div.inscription form {
-        width: 50%;
-    }
-}
-
-/*fin page inscription */
-
-/*page contact*/
-div.contact {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: start;
-    align-items: center;
-    gap: 1%;
-}
-
-    div.contact form {
-        margin-top: 1%;
-        height: 100%;
-        width: 100%;
+    #index #se_loguer {
+        width: 36%;
+        height: 32%;
+        text-align: center;
+        padding-top: 2%;
         display: flex;
         flex-direction: column;
+        align-items: center;
     }
 
-        div.contact form .center {
-            height: 112%;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: center;
-            gap: 2%;
-            width: 100%;
-        }
-
-        div.contact form .left {
-            margin-top: 1%;
-            height: 40%;
-            display: grid;
-            grid-template-columns: 40% 60%;
-            grid-template-rows: repeat(4,1fr);
-            gap: 2%;
-            width: 97%;
-        }
-
-            div.contact form .left .padding {
-                padding-left: 3em;
-            }
-
-    div.contact textarea {
-        width: 98%;
-        height: 37%;
+    #index #top {
+        width: 28%;
+        height: 28%
     }
 
-    div.contact input[type], div.contact select {
-        height: 2.5em;
+    #index .fleche-droite {
+        right: 38%;
+        width: 3em;
+        top: 68%;
     }
 
-    div.contact button {
-        height: 2em;
-        width: 5em;
+    #index .fleche-gauche {
+        left: 38%;
+        width: 3em;
+        top: 68%;
     }
 
-    div.contact input, div.contact textarea, div.contact form, div.contact select, div.contact button {
-        background-color: rgb(255, 255, 255, 0.7);
-        border: 2px solid rgb(255, 255, 255);
-        border-radius: 10px;
-    }
-
-    div.contact .left {
-    }
-
-@media (min-width: 600px) {
-    div .contact form {
-        width: 40%;
-        /*faire du grid ici lol*/
-    }
-}
-/*fin page contact*/
-/*page acceuil*/
-
-div.acceuil .video {
-    position:absolute;
-    top:10vh;
-    left:0;
-}
-
-    div.acceuil .presentation {
-        position: absolute;
-        top: 10vh;
-        left: 0;
-        width: 100vw;
-        height: 40vh;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        grid-template-rows: 80% 20%;
-        padding-right: 2em;
-        border: 2px solid orange;
-    }
-
-    div.acceuil .white {
-        grid-column-start: span 2;
-    }
-
-    div.acceuil .orange-left {
-        display: grid;
-        grid-template: 1fr 1fr 1fr/ 1fr 1fr;
-    }
-
-html {
-    font-size: 14px;
-}
-
-@media (min-width: 768px) {
-    html {
-        font-size: 16px;
-    }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-    position: relative;
-    min-height: 100%;
-}
-
-body {
-    margin-bottom: 60px;
-}
-
-hr {
-    position: relative;
-    left: 0;
-    width: 98%;
-    display: block;
-    border: 2px solid gray;
-}
-/*page index*/
-div.index {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-content: space-around;
-    gap: 2%;
-    flex-wrap: wrap
-}
-
-    div.index h1 {
-        width: 100%;
+    #index h1 {
         padding: 0;
-        margin: 0;
-        margin-bottom: 8%;
     }
 
-    div.index form h2,
-    div.index form div,
-    div.index form p {
-        text-align: center;
+    #index footer {
+        justify-content: right;
     }
 
-    div.index #se_loguer,
-    div.index #top {
-        background-color: rgb(255, 255, 255, 0.7);
-        width: 60%;
-        border: 2px solid rgb(255, 255, 255);
-        border-radius: 10px;
-    }
-
-    div.index #se_loguer {
-        display: flex;
-        flex-direction: column;
-        text-align: center;
-        align-items: start;
-        padding-left: 2.5em;
-        height: 40%;
-        padding-top: 10%;
-    }
-
-    div.index [type] {
-        border-radius: 10px;
-        width: 11em;
-    }
-
-    div.index #top {
-        width: 60vw;
-        height: 30vh;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-around;
-        align-items: center;
-    }
-
-        div.index #top h2 {
-            margin: 0%;
-        }
-
-    div.index .fleche-droite {
-        position: absolute;
-        right: 22%;
-        top: 70%;
-        width: 1.5em;
-    }
-
-    div.index .fleche-gauche {
-        position: absolute;
-        left: 22%;
-        top: 70%;
-        width: 1.5em;
-    }
-
-    div.index #eye {
-        width: 20%;
-        height: 80%;
-    }
-
-    div.index .div-eye {
-        display: flex;
-        align-items: center;
-    }
-
-    div.index .slide {
+    #index .slides {
         position: relative;
-        height: 9em;
+        height: 10em;
+        width: 12em;
+        ()
     }
 
-    div.index .container-slide {
-        display: flex;
-        justify-content: center;
-        align-items: center;
+    #index [type] {
+        width: 17em;
     }
 
-    div.index img.slide {
-        height: 11em;
-        width: 11em;
+    #index #eye {
+        width: 10%;
+        height: 80%;
+        position: absolute;
+        height: 3em;
+        width: 3em;
+        right: 37%;
     }
-
-@media (min-width: 600px) {
-    div.index {
-        height: 100%;
-        width: 100%;
-        display: grid;
-        grid-auto-flow: column;
-        grid-template-rows: 1fr 1fr;
-        grid-template-columns: 1fr;
-        justify-items: center;
-        align-items: center;
-    }
-
-        div.index #se_loguer {
-            width: 36%;
-            height: 94%;
-            text-align: center;
-            padding-top: 4%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        div.index #top {
-            width: 28%;
-            height: 85%
-        }
-
-        div.index .fleche-droite {
-            right: 38%;
-            width: 3em;
-            top: 78%;
-        }
-
-        div.index .fleche-gauche {
-            left: 38%;
-            width: 3em;
-            top: 78%;
-        }
-
-        div.index h1 {
-            padding: 0;
-        }
-
-        div.index footer {
-            justify-content: right;
-        }
-
-        div.index img.slide {
-            position: relative;
-            height: 9em;
-            width: 13em;
-        }
-
-        div.index [type] {
-            width: 17em;
-        }
-
-        div.index #eye {
-            width: 10%;
-            height: 80%;
-            position: absolute;
-            height: 3em;
-            width: 3em;
-            right: 39%;
-        }
 
     /*fin page index*/
 }
+
+
+
 /*page privacy*/
 div.privacy {
     height: 100%;
@@ -817,415 +417,6 @@ div.contact {
 }
 /*fin page contact*/
 
-/*page acceuil*/
-
-div.acceuil {
-}
-
-    div.acceuil .presentation {
-        position: absolute;
-        top: 10vh;
-        left: 0;
-        width: 100vw;
-        height: 40vh;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        grid-template-rows: 80% 20%;
-        padding-right: 2em;
-        border: 2px solid orange;
-    }
-
-    div.acceuil .white {
-        grid-column-start: span 2;
-    }
-
-    div.acceuil .orange-left {
-        display: grid;
-        grid-template: 1fr 1fr 1fr/ 1fr 1fr;
-    }
-
-html {
-    font-size: 14px;
-}
-
-@media (min-width: 768px) {
-    html {
-        font-size: 16px;
-    }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-    position: relative;
-    min-height: 100%;
-}
-
-body {
-    margin-bottom: 60px;
-}
-
-hr {
-    position: relative;
-    left: 0;
-    width: 98%;
-    display: block;
-    border: 2px solid gray;
-}
-/*page index*/
-div.index {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-content: space-around;
-    gap: 2%;
-    flex-wrap: wrap
-}
-
-    div.index h1 {
-        width: 100%;
-        padding: 0;
-        margin: 0;
-        margin-bottom: 8%;
-    }
-
-    div.index form h2,
-    div.index form div,
-    div.index form p {
-        text-align: center;
-    }
-
-    div.index #se_loguer,
-    div.index #top {
-        background-color: rgb(255, 255, 255, 0.7);
-        width: 60%;
-        border: 2px solid rgb(255, 255, 255);
-        border-radius: 10px;
-    }
-
-    div.index #se_loguer {
-        display: flex;
-        flex-direction: column;
-        text-align: center;
-        align-items: start;
-        padding-left: 2.5em;
-        height: 40%;
-        padding-top: 10%;
-    }
-
-    div.index [type] {
-        border-radius: 10px;
-        width: 11em;
-    }
-
-    div.index #top {
-        width: 60vw;
-        height: 30vh;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-around;
-        align-items: center;
-    }
-
-        div.index #top h2 {
-            margin: 0%;
-        }
-
-    div.index .fleche-droite {
-        position: absolute;
-        right: 22%;
-        top: 70%;
-        width: 1.5em;
-    }
-
-    div.index .fleche-gauche {
-        position: absolute;
-        left: 22%;
-        top: 70%;
-        width: 1.5em;
-    }
-
-    div.index #eye {
-        width: 20%;
-        height: 80%;
-    }
-
-    div.index .div-eye {
-        display: flex;
-        align-items: center;
-    }
-
-    div.index .slide {
-        position: relative;
-        height: 9em;
-    }
-
-    div.index .container-slide {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    div.index img.slide {
-        height: 11em;
-        width: 11em;
-    }
-
-@media (min-width: 600px) {
-    div.index {
-        height: 100%;
-        width: 100%;
-        display: grid;
-        grid-auto-flow: column;
-        grid-template-rows: 1fr 1fr;
-        grid-template-columns: 1fr;
-        justify-items: center;
-        align-items: center;
-    }
-
-        div.index #se_loguer {
-            width: 36%;
-            height: 94%;
-            text-align: center;
-            padding-top: 4%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        div.index #top {
-            width: 28%;
-            height: 85%
-        }
-
-        div.index .fleche-droite {
-            right: 38%;
-            width: 3em;
-            top: 78%;
-        }
-
-        div.index .fleche-gauche {
-            left: 38%;
-            width: 3em;
-            top: 78%;
-        }
-
-        div.index h1 {
-            padding: 0;
-        }
-
-        div.index footer {
-            justify-content: right;
-        }
-
-        div.index img.slide {
-            position: relative;
-            height: 9em;
-            width: 13em;
-        }
-
-        div.index [type] {
-            width: 17em;
-        }
-
-        div.index #eye {
-            width: 10%;
-            height: 80%;
-            position: absolute;
-            height: 3em;
-            width: 3em;
-            right: 39%;
-        }
-
-    /*fin page index*/
-}
-/*page privacy*/
-div.privacy {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    align-items: center;
-    gap: 2%;
-    overflow: scroll;
-    scroll-behavior: smooth;
-}
-
-    div.privacy button, div.privacy article {
-        background-color: rgb(255, 255, 255, 0.7);
-        width: 60%;
-        border: 2px solid rgb(255, 255, 255);
-        border-radius: 10px;
-    }
-
-    div.privacy article {
-        margin: 1%;
-        width: 90%;
-    }
-
-@media (min-width: 768px) {
-    div.privacy button {
-        width: 20%;
-    }
-}
-
-/*fin page privacy*/
-
-/*page inscription*/
-div.inscription form {
-    display: grid;
-    grid-auto-flow: row;
-    grid-template: 1fr 1fr 1fr 1fr 1fr 1fr/ 50% 50%;
-    justify-content: end;
-    align-items: center;
-    background-color: rgb(255, 255, 255, 0.7);
-    margin: 1vh;
-    height: 90%;
-    width: 90%;
-    border: 2px solid rgb(255, 255, 255);
-    border-radius: 10px;
-    gap: 1%;
-}
-
-div.inscription {
-    position: fixed;
-    top: 10vh;
-    height: 85vh;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-    div.inscription #div-eye {
-        display: flex;
-        justify-content: left;
-        align-items: center;
-    }
-
-    div.inscription #eye {
-        width: 15%;
-    }
-
-    div.inscription label {
-        justify-self: end;
-    }
-
-    div.inscription input {
-        height: 1.2em;
-        width: 70%;
-    }
-
-        div.inscription input[type="submit"] {
-            grid-column: 1 / span 2;
-            justify-self: center;
-            width: 20%;
-        }
-
-        div.inscription input[type="file"] {
-            display: none;
-        }
-
-    div.inscription label[for="pp"] {
-        display: flex;
-        align-items: center;
-    }
-
-    div.inscription img#img-profil {
-        height: 50%;
-    }
-
-@media (min-width: 600px) {
-    div .inscription #eye {
-        width: 10%;
-    }
-
-    div.inscription form {
-        width: 50%;
-    }
-}
-
-/*fin page inscription */
-
-/*page contact*/
-div.contact {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: start;
-    align-items: center;
-    gap: 1%;
-}
-
-    div.contact form {
-        margin-top: 1%;
-        height: 100%;
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-    }
-
-        div.contact form .center {
-            height: 112%;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: center;
-            gap: 2%;
-            width: 100%;
-        }
-
-        div.contact form .left {
-            margin-top: 1%;
-            height: 40%;
-            display: grid;
-            grid-template-columns: 40% 60%;
-            grid-template-rows: repeat(4,1fr);
-            gap: 2%;
-            width: 97%;
-        }
-
-            div.contact form .left .padding {
-                padding-left: 3em;
-            }
-
-    div.contact textarea {
-        width: 98%;
-        height: 37%;
-    }
-
-    div.contact input[type], div.contact select {
-        height: 2.5em;
-    }
-
-    div.contact button {
-        height: 2em;
-        width: 5em;
-    }
-
-    div.contact input, div.contact textarea, div.contact form, div.contact select, div.contact button {
-        background-color: rgb(255, 255, 255, 0.7);
-        border: 2px solid rgb(255, 255, 255);
-        border-radius: 10px;
-    }
-
-    div.contact .left {
-    }
-
-@media (min-width: 600px) {
-    div .contact form {
-        width: 40%;
-        /*faire du grid ici lol*/
-    }
-}
-/*fin page contact*/
 /*page acceuil*/
 
 div.acceuil {
@@ -1307,3 +498,21 @@ div.catalogue {
     }
 
 /*fin page catalogue*/
+/*détails*/
+div.detail {
+    height: 85vh;
+    width: 100vw;
+    position: fixed;
+    top: 10vh;
+    left: 0;
+    flex-direction: column;
+    overflow: scroll;
+}
+
+div.detail .image{
+    width:50vh;
+    height:50vh;
+
+}
+
+/*fin page détails*/

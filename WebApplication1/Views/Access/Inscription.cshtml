@@ -12,7 +12,9 @@
 <script src="@eye" defer></script>
 
 <div class="inscription">
+
         <form asp-controller="Access" asp-action="SignUp" method="post">
+        <h1 class="fusion">Inscription</h1>
             <label asp-for="@Model.nom"> nom : </label>
             <input asp-for="@Model.nom">
             <label asp-for="@Model.pseudo">pseudo : </label>

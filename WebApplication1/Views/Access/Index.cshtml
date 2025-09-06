@@ -7,20 +7,25 @@
 	ViewData["Title"] = "Login";
 }
 
-<div class="index">
+<div id="index">
 	<script src="@slide" defer></script>
-	<script src="@eye" defer></script> 
+	<script src="@eye" defer></script>
 
-	<form asp-controller="Access" asp-action="SignIn" method="post">
-		<label asp-for="@Model.Utilisateur.pseudo">Pseudo :</label>
-		<input asp-for="@Model.Utilisateur.pseudo" />
-		<br>
+	<form id="se_loguer" asp-controller="Access" asp-action="SignIn" method="post">
+		<h1 class="fusion">Connection</h1>
+		<div class="start">
+			<div>
 
-		
-		<div class="div-eye">
-			<label asp-for="@Model.Utilisateur.motdePasse">Mot de passe :</label>
-			<input asp-for="@Model.Utilisateur.motdePasse" />
-			<img src="./img/site/oeil.png" alt="" id="eye">
+				<label asp-for="@Model.Utilisateur.pseudo">Pseudo :</label>
+				<input asp-for="@Model.Utilisateur.pseudo" />
+				<br>
+			</div>
+
+			<div class="div-eye">
+				<label asp-for="@Model.Utilisateur.motdePasse">Mot de passe : </label>
+				<input asp-for="@Model.Utilisateur.motdePasse" />
+				<img src="./img/site/oeil.png" alt="" id="eye">
+			</div>
 		</div>
 
 		<hr>

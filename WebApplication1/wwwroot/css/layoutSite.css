@@ -14,16 +14,19 @@ header {
     display: flex;
     flex-direction: column;
 }
-nav a{
-    text-transform:none;
-    color:black;
-    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 
+nav a {
+    text-transform: none;
+    color: black;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    text-decoration: none;
 }
-nav  {
-    display:flex;
-    ]
 
+.lien {
+    position:fixed;
+    right : 10vw;
+    width: 17vw;
+    justify-content: space-between;
 }
 
 .top-header {
@@ -35,7 +38,6 @@ nav  {
     justify-content: space-around;
     align-items: center;
     padding-right: 2em;
-    
 }
 
 #logo {
@@ -52,4 +54,10 @@ footer {
     justify-content: end;
     align-items: center;
     padding-right: 2em;
+    background-color: #19515d;
+    color:azure;
 }
+    footer a {
+        text-decoration: none;
+        color: azure;
+    }

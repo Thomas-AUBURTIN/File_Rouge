@@ -17,7 +17,8 @@
 		<div class="top-header">
 			<img src="~/img/site/webclip-Photoroom.png" alt="logo" id="logo">
 			<h1>LES MAUVAIS JOUEURS</h1>
-			<nav>
+			<div></div>
+			<nav class="lien">
 				<a asp-controller="Catalogue" asp-action="index">Catalogue de jeu</a>
 				<a asp-controller="Catalogue" asp-action="Nouveau">Nouveau</a>
 				@if (User.Identity.IsAuthenticated)
@@ -37,8 +38,8 @@
 	</div>
 
 	<footer>
-		&copy; 2025 - WebApplication1 - <a asp-controller="Home" asp-action="Contact">Contact</a> -
-		<a asp-controller="Home" asp-action="Privacy">Privacy</a> - <a asp-controller="Home" asp-action="Legal">Légal</a>
+		&copy; 2025 - WebApplication1 - <a asp-controller="Pieds" asp-action="Contact">Contact</a> -
+		<a asp-controller="Pieds" asp-action="Privacy">Privacy</a> - <a asp-controller="Pieds" asp-action="Index">Légal</a>
 	</footer>
 	<script src="~/lib/jquery/dist/jquery.min.js"></script>
 	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
