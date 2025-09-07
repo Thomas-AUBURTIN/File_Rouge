@@ -9,8 +9,9 @@
 @{
 	Layout = "~/Views/Shared/_LayoutSite.cshtml";
 }
-
+<div class="editer">
 <form asp-controller="Catalogue" asp-action="@Model.action" asp-route-id="@Model.Jeu.jeuid" method="post" enctype="multipart/form-data">
+	<h1>@ViewData["titre"]</h1>
 	<table>
 		<tr>
 			<td><label asp-for="@Model.Jeu.titre"></label></td>
@@ -66,7 +67,7 @@
 	<input type="hidden" asp-for="@Model.Jeu.jeuid" >
 	<input type="submit" value="Envoyer">
 </form>
-
+</div>
 @section Scripts {
 	<partial name="_ValidationScriptsPartial" />
 }

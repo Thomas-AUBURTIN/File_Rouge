@@ -13,6 +13,7 @@ header {
     height: 10vh;
     display: flex;
     flex-direction: column;
+    background-color:#fffff0;
 }
 
 nav a {
@@ -24,8 +25,10 @@ nav a {
 
 .lien {
     position:fixed;
-    right : 10vw;
-    width: 17vw;
+    right : 5vw;
+    width: 33vw;
+    display:flex;
+    flex-direction:row;
     justify-content: space-between;
 }
 
@@ -60,4 +63,8 @@ footer {
     footer a {
         text-decoration: none;
         color: azure;
+    }
+    footer .logo{
+        height:2em;
+        width:2em;
     }

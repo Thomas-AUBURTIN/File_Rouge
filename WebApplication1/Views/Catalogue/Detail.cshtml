@@ -11,7 +11,7 @@
 	Layout = "~/Views/Shared/_LayoutSite.cshtml";
 }
 <div class="detail">
-	<div>
+	<div class="centre">
 	<h1>@Model.titre</h1>
 	<img src="@Model.image" class="image" />
 	<p class="description">@Model.description</p>
@@ -39,7 +39,7 @@
 		Commentaire :
 		@foreach (Commentaire comm in @Model.commentaires)
 		{
-			<li>
+			<li class="encadre">
 				<p>@comm.commentaire</p>
 				<p>@comm.utilisateurNom - @comm.datecommentaires</p>
 				</li>
@@ -52,7 +52,7 @@
 
 		if(commentaire)
 		{
-			<a asp-controller="Catalogue" asp-action="FaireCommentaire" asp-route-id="@Model.jeuid"> faire un commentaire
+			<a asp-controller="Catalogue" asp-action="FaireCommentaire" asp-route-id="@Model.jeuid" > faire un commentaire
 			</a>
 		}
 		else

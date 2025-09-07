@@ -15,18 +15,28 @@
 <body>
 	<header>
 		<div class="top-header">
-			<img src="~/img/site/webclip-Photoroom.png" alt="logo" id="logo">
+			<a asp-controller="Acceuil" asp-action="Index"><img src="~/img/site/webclip-Photoroom.png" alt="logo" id="logo"></a>
 			<h1>LES MAUVAIS JOUEURS</h1>
+
 			<div></div>
 			<nav class="lien">
 				<a asp-controller="Catalogue" asp-action="index">Catalogue de jeu</a>
-				<a asp-controller="Catalogue" asp-action="Nouveau">Nouveau</a>
+				@if (User.IsInRole("Admin"))
+				{
+					<a asp-controller="Catalogue" asp-action="Nouveau">Nouveau</a>
+
+				}
+				<form id="formRecherche">
+					<input id="inputJeu" type="text" placeholder="Nom du jeu…">
+					<button type="submit">Rechercher</button>
+				</form>
+
 				@if (User.Identity.IsAuthenticated)
 				{
 					<a asp-controller="Access" asp-action="SignOut">Se déconnecter</a>
 
 				}
-
+				
 			</nav>
 		</div>
 
@@ -38,9 +48,13 @@
 	</div>
 
 	<footer>
+		<a href="https://www.instagram.com/les_mauvais_joueurs/"><img class="logo" src="~/img/site/instagram-1.png" alt="Alternate Text" /></a>
+		<a href="https://www.facebook.com/pages/category/Bar/Les-Mauvais-Joueurs-318871245274187/"><img class="logo" src="~/img/site/facebook1.png" alt="Alternate Text" /></a>
 		&copy; 2025 - WebApplication1 - <a asp-controller="Pieds" asp-action="Contact">Contact</a> -
 		<a asp-controller="Pieds" asp-action="Privacy">Privacy</a> - <a asp-controller="Pieds" asp-action="Index">Légal</a>
+
 	</footer>
+	
 	<script src="~/lib/jquery/dist/jquery.min.js"></script>
 	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 	<script src="~/js/site.js" asp-append-version="true"></script>

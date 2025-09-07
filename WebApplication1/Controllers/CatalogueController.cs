@@ -210,7 +210,7 @@ namespace WebApplication1.Controllers
                         .Where(c => c != null)
                         .DistinctBy(c => new { c.jeuId, c.utilisateurId, c.commentaire, c.datecommentaires })
                         .ToList();
-                
+
                     if (groupedJeu.types.Count != 0)
                     {
                         groupedJeu.types = g.Select(j => j.types.Single())
@@ -400,6 +400,7 @@ namespace WebApplication1.Controllers
                 }).First();
 
                 edit = getTypesThemes(edit);
+                ViewData["titre"] = "Editer";
                 return View(edit);
             }
         }
@@ -516,6 +517,7 @@ namespace WebApplication1.Controllers
             EditeurJeuViewModel jeuViewModel = new() { action = "Nouveau", titre = "Nouveau Livre" };
             jeuViewModel = getTypesThemes(jeuViewModel);
             jeuViewModel.Jeu = new Jeux();
+            ViewData["titre"] = "Nouveau";
             return View("Editer", jeuViewModel);
         }
 
@@ -742,6 +744,30 @@ namespace WebApplication1.Controllers
                 }
                 return RedirectToAction("Detail", new { id = comm.jeuId });
 
+            }
+        }
+        public IActionResult Recherche([FromQuery] String nom)
+        {
+            string query = "select jeuid from jeux where TITRE = @nom";
+            List<int> ids;
+            try
+            {
+                using (var connexion = new NpgsqlConnection(_connexionString))
+                {
+                    ids = connexion.Query<int>(query, new { nom = nom }).ToList();
+
+                }
+                int? id = ids[0];
+                if (id != null)
+                    return Ok(id);
+                else
+                    return NotFound();
+
+            }
+            catch(Exception e)
+            {
+                ViewData["ValidateMessage"] = e.Message;
+                return View();
             }
         }
     }
