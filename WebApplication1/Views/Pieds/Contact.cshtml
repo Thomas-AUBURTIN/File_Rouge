@@ -1,55 +1,93 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
+@Model ContactViewModel
 @{
-	<div class="contact">
-		<form>
-			<div class="left">
+	ViewData["Title"] = "Contact";
 
-				<label class="padding" for="prenom">Prenom :</label>
-				<input type="text" name="prenom" value="" id="Prenom" placeholder="prenom" />
+}
 
 
-				<label class="padding" for="Nom">Nom :</label>
-				<input type="text" name="Nom" value="" id="Nom" placeholder="nom" />
+<div class="contact">
+	<form asp-controller="Pieds" asp-action="Mails" method="post">
+		@{
+			if (User?.Identity?.IsAuthenticated == false && !User.Identity.IsAuthenticated)
+			{
+				<label for="Nom">Nom :</label>
+				<input type="text" name="Nom" id="Nom" value="" />
+				<label for="Email">Email :</label>
+				<input type="email" name="Email" id="Email" value="" />
+			}
 
 
-				<label class="padding" for="telephone">telephone :</label>
-				<input type="tel" name="Telephone" id="Telephone" value="" placeholder="0612345678" />
 
-
-				<label class="padding" for="email">Email :</label>
-				<input type="email" name="email" value="" id="email" placeholder="exemple@gmail.com" />
-
-			</div>
-			<div class="center">
-				<div>
-					<input type="text" name="sujet" value="" placeholder="Sujet" />
-					<select name="theme" id="theme">
-						<option value="">--Choisir un sujet--</option>
-						<option value="reservation">reservation</option>
-						<option value="jeu">demande de jeu</option>
-						<option value="objet">objet perdu</option>
-						<option value="Reclamation">Reclamation</option>
-						<option value="autres">autres</option>
-					</select>
-				</div>
-				<textarea name="texte" id="texte" placeholder="mon message"></textarea>
-				<input type="submit" name="submit" value="Envoyer" />
-			</div>
-
-		</form>
-		@if (User?.Identity?.IsAuthenticated == true && User.Identity.IsAuthenticated)
-		{
-			<button><a asp-controller="Acceuil" asp-action="index">retour</a></button>
-		}
-		else
-		{
-			<button><a asp-controller="Access" asp-action="index">retour</a></button>
 
 		}
+
+
+
+		<div class="center">
+			<div>
+				<input type="text" name="Sujet" id="Sujet" value="" placeholder="Sujet" />
+				<select name="theme" id="Theme">
+					<option value="">--Choisir un sujet--</option>
+					<option value="reservation">reservation</option>
+					<option value="jeu">demande de jeu</option>
+					<option value="objet">objet perdu</option>
+					<option value="Reclamation">Reclamation</option>
+					<option value="autres">autres</option>
+				</select>
+			</div>
+			<textarea name="texte" id="texte" placeholder="mon message"></textarea>
+			<input type="submit" />
+		</div>
+
+	</form>
+	<div>
+		<h2>Bar à jeux Bastille</h2>
+		<p>Adresse : 46 rue Sedaine, 75011, Paris</p>
+		<p>Téléphone : 06.50.66.79.21</p>
+		<p>Horaires :</p>
+		<p>
+			Mardi : 17h - 23h<br>
+			Mercredi : 17h - 00h<br>
+			Jeudi : 17h - 00h<br>
+			Vendredi : 17h - 01h<br>
+			Samedi : 13h30 - 01h<br>
+			Dimanche : 14h - 22h<br>
+			Lundi : Fermé
+		</p>
 	</div>
-	<script src="../js/insc.js" defer></script>
+
+	<div>
+		<h2>Boutique de jeux Bastille</h2>
+		<p>Adresse : 63 rue Sedaine, 75011, Paris</p>
+		<p>Téléphone : 01.48.06.46.97</p>
+		<p>Horaires :</p>
+		<p>
+			Mercredi : 11h - 19h<br>
+			Jeudi : 11h - 19h<br>
+			Vendredi : 11h - 19h<br>
+			Samedi : 11h - 19h<br>
+			Dimanche : 11h - 19h<br>
+			Lundi et Mardi : Fermé
+		</p>
+	</div>
+
+
+
+
+	@if (User?.Identity?.IsAuthenticated == true && User.Identity.IsAuthenticated)
+	{
+		<button><a asp-controller="Acceuil" asp-action="index">retour</a></button>
+	}
+	else
+	{
+		<button><a asp-controller="Access" asp-action="index">retour</a></button>
+
+	}
+</div>
+<script src="../js/insc.js" defer></script>
 
 
 

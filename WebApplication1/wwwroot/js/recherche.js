@@ -6,7 +6,7 @@
     Jeux.forEach(l => AfficherJeu(l));
 }
 
-function Afficherjeu(Jeux) {
+function AfficherJeu(Jeux) {
     let l = document.createElement("div");
     let titre = document.createElement("a");
     titre.href = "http://localhost:5248/Catalogues/Detail/" + Jeux.jeuid;
@@ -16,7 +16,7 @@ function Afficherjeu(Jeux) {
 }
 
 let barreRecherche = document.getElementById("inputJeu");
-barreRecherche.addEventListener("input", rechercheLivre);
+barreRecherche.addEventListener("input", rechercheJeux);
 
 
 async function toggleRecherche() {

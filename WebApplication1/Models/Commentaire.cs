@@ -18,5 +18,9 @@ namespace WebApplication1.Models
 
         // Date à laquelle le commentaire a été laissé
         public DateTime? datecommentaires { get; set; } = DateTime.UtcNow;
+
+        [Range(0, 5)]
+        [Required(ErrorMessage = "Entrer votre note")]
+        public int note { get; set; }
     }
 }

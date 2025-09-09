@@ -764,29 +764,19 @@ namespace WebApplication1.Controllers
 
             }
         }
+        [HttpGet]
         public IActionResult Recherche([FromQuery] String nom)
         {
-            string query = "select jeuid from jeux where TITRE = @nom";
-            List<int> ids;
-            try
-            {
-                using (var connexion = new NpgsqlConnection(_connexionString))
-                {
-                    ids = connexion.Query<int>(query, new { nom = nom }).ToList();
 
-                }
-                int? id = ids[0];
-                if (id != null)
-                    return Ok(id);
-                else
-                    return NotFound();
-
-            }
-            catch(Exception e)
+            string query = "SELECT * FROM Jeux WHERE lower(titre) like lower(@titre)";
+            List<Jeux> Jeux;
+            using (var connexion = new NpgsqlConnection(_connexionString))
             {
-                ViewData["ValidateMessage"] = e.Message;
-                return View();
+                Jeux = connexion.Query<Jeux>(query, new { titre = "%" + nom + "%" }).ToList();
             }
+            return Json(Jeux);
+
+
         }
     }
 }

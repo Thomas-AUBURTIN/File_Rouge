@@ -18,8 +18,10 @@
 	<h1>@ViewData["titre"]</h1>
 	<p>Ajouter un commentaire</p>
 	<textarea asp-for="@Model.commentaire"></textarea>
+		<input asp-for="@Model.note" min="0" max="5"/>
 	<input type="hidden" asp-for="@Model.jeuId" value=@ViewData["id"] />
 	<input type="hidden" asp-for="@Model.utilisateurId" value=@ViewData["utilid"] />
+		<input  type="hidden" asp-for="@Model.utilisateurNom" value=@ViewData["nom"] />
 	<input type="submit" />
 </form>
 </div>

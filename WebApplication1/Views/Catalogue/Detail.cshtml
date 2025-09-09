@@ -42,17 +42,20 @@
 			<li class="encadre">
 				<p>@comm.commentaire</p>
 				<p>@comm.utilisateurNom - @comm.datecommentaires</p>
+				<p>@comm.note</p>
 				</li>
 
 		}
 		
 	</ul>
 	@{
+
 		bool commentaire = (bool)ViewData["comm"];
 
 		if(commentaire)
 		{
-			<a asp-controller="Catalogue" asp-action="FaireCommentaire" asp-route-id="@Model.jeuid" > faire un commentaire
+			<a asp-controller="Catalogue" asp-action="FaireCommentaire" asp-route-id="@Model.jeuid" asp-route-userid="@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value">
+				> faire un commentaire
 			</a>
 		}
 		else
