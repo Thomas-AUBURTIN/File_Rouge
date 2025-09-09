@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
             {
                 option.LoginPath = "/Access/SignIn";
                 option.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+                option.AccessDeniedPath = "/Home/HandleError/403";
             }
         );
 builder.Services.Configure<CookiePolicyOptions>(options =>
@@ -17,7 +19,8 @@ builder.Services.Configure<CookiePolicyOptions>(options =>
     // cookies is needed for a given request.
     options.CheckConsentNeeded = context => true;
 
-    options.MinimumSameSitePolicy = SameSiteMode.None;
+    options.MinimumSameSitePolicy = SameSiteMode.Lax;
+
 });
 
 var app = builder.Build();
@@ -26,11 +29,15 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
+    app.UseStatusCodePagesWithReExecute("/Home/HandleError/{0}");
 }
+
+
+
 app.UseStaticFiles();
 
 app.UseRouting();
-app.UseAuthentication(); ; ; ;
+app.UseAuthentication();
 app.UseAuthorization();
 app.UseCookiePolicy();
 

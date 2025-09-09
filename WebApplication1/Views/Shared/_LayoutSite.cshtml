@@ -10,6 +10,7 @@
 	<link rel="stylesheet" href="~/css/normalize.css" asp-append-version="true">
 	<link rel="stylesheet" href="~/css/LayoutSite.css" asp-append-version="true" />
 	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+	
 
 </head>
 <body>
@@ -26,10 +27,18 @@
 					<a asp-controller="Catalogue" asp-action="Nouveau">Nouveau</a>
 
 				}
-				<form id="formRecherche">
-					<input id="inputJeu" type="text" placeholder="Nom du jeu…">
-					<button type="submit">Rechercher</button>
-				</form>
+				@{
+					var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+					var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+				}
+				@if (currentController == "Catalogue" && currentAction == "index")
+				{
+					<form id="formRecherche">
+						<input id="inputJeu" type="text" placeholder="Nom du jeu…">
+						<button type="submit">Rechercher</button>
+					</form>
+					<div id="affichageRecherche"></div>
+				}
 
 				@if (User.Identity.IsAuthenticated)
 				{
@@ -58,6 +67,7 @@
 	<script src="~/lib/jquery/dist/jquery.min.js"></script>
 	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 	<script src="~/js/site.js" asp-append-version="true"></script>
+	<script src="~/js/recherche.js" asp-append-version="true"></script>
 	@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

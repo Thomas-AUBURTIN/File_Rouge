@@ -15,28 +15,6 @@ Array.from(formsSupprLivre).forEach(form => {
 });
 
 
-document.getElementById('formRecherche').addEventListener('submit', function (event) {
-    event.preventDefault(); // Empêche le rechargement[6][14].
 
-    // Récupère la valeur saisie
-    const nomJeu = document.getElementById('inputJeu').value.trim();
-
-    // On prépare le paramètre (GET recommandé pour une recherche simple)
-    fetch(`/Catalogue/Recherche?nom=${encodeURIComponent(nomJeu)}`) // Adapte l’URL à ton API
-        .then(response => {
-            if (!response.ok) throw new Error('Jeu non trouvé');
-            return response.json();
-        })
-        .then(data => {
-            // Si data est un int, aucune propriété à lire
-            if (typeof data === "number") {
-                window.location.href = `/catalogue/Detail?id=${data}`;
-            } else {
-                alert("Aucun jeu trouvé");
-            }
-        })
-        .catch(error => {
-            alert('Erreur lors de la recherche : ' + error.message);
-        });
-});
+   
 

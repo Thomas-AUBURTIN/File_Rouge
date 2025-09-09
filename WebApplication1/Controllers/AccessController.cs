@@ -68,9 +68,11 @@ namespace WebApplication1.Controllers
             string querysecure = "select * from UTILISATEURS U where pseudo=@pseudo or nom = @nom or telephone = @tel;";
             string query = "INSERT INTO Utilisateurs (nom,email,MOTDEPASSE,telephone,verificationtoken,administrateur,pseudo,dateinscription,emailverified) VALUES (@nom,@email,@mdp,@tel,@veriftoken,false,@pseudo,@date,false)";
 
-            using (var connexionSecure = new NpgsqlConnection(_connexionString))
+
+
+            using (var transaction = new NpgsqlConnection(_connexionString))
             {
-                int secure = connexionSecure.Execute(querysecure, new
+                int secure = transaction.ExecuteScalar<int>(querysecure, new
                 {
                     nom = utilisateur.nom,
                     tel = utilisateur.Telephone,
@@ -84,6 +86,7 @@ namespace WebApplication1.Controllers
                     return RedirectToAction("Index", "Access");
 
                 }
+
 
 
                 // hachage du mot de passe
@@ -116,12 +119,12 @@ namespace WebApplication1.Controllers
                         {
                             UriBuilder uriBuilder = new UriBuilder();
                             uriBuilder.Port = 5248;
-                            uriBuilder.Path = "/access/verifyemail";
+                            uriBuilder.Path = "/Access/Verifyemailpage";
                             uriBuilder.Query = $"email={HttpUtility.UrlEncode(utilisateur.email)}&token={HttpUtility.UrlEncode(token)}";
 
                             // envoi du mail avec le token
                             MailMessage mail = new MailMessage();
-                            mail.From = new MailAddress("user1@test.fr");
+                            mail.From = new MailAddress("app@test.fr");
                             mail.To.Add(new MailAddress(utilisateur.email));
                             mail.Subject = "Vérification d'email";
                             mail.Body = $"<a href={uriBuilder.Uri}>Vérifier l'email</a>";
@@ -129,19 +132,19 @@ namespace WebApplication1.Controllers
 
                             using (var smtp = new SmtpClient("localhost", 587))
                             {
-                                smtp.Credentials = new NetworkCredential("user1@test.fr", "123456");
+                                smtp.Credentials = new NetworkCredential("app@test.fr", "123456");
                                 smtp.EnableSsl = false; // devrait être à true mais l'environnement de test ne le permet pas
                                 smtp.Send(mail);
                             }
 
-                            return RedirectToAction("Checkemail", "Access");
+                            return RedirectToAction("ResultatInscription", "Access");
                         }
                     }
                 }
                 catch (Exception e)
                 {
                     ViewData["ValidateMessage"] = e.Message;  // TODO à ajouter dans la vue
-                    return RedirectToAction("SignUp","Access");
+                    return RedirectToAction("SignUp", "Access");
                 }
             }
         }
@@ -201,9 +204,9 @@ namespace WebApplication1.Controllers
                     ).ToList();
                     if (users.Count != 1)
                     {
-                        
+
                         // TODO gérer les erreurs du model et vider mot de passe
-                        return  RedirectToAction("Index", "Access");
+                        return RedirectToAction("Index", "Access");
                     }
                     userFromBDD = users.First();
                 }
@@ -271,26 +274,7 @@ namespace WebApplication1.Controllers
             return RedirectToAction("Index", "Access");
         }
 
-        // Action qui gère l'affichage des pages d'erreur personnalisées selon le code d'erreur
-        [Route("/Home/HandleError/{statusCode}")]
-        public IActionResult HandleError(int statusCode)
-        {
-            // Si l'utilisateur n'a pas les droits d'accès
-            if (statusCode == 403)
-            {
-                return View("AccessDenied"); // Affiche la vue d'accès refusé
-            }
-            // Si la page demandée n'existe pas
-            else if (statusCode == 404)
-            {
-                return View("NotFound"); // Affiche la vue page non trouvée
-            }
-            else
-            {
-                // Pour tous les autres codes d'erreur
-                return View("AutresErreurs"); // Affiche la vue d'erreurs diverses
-            }
-        }
+        
 
         public List<Jeux> ListeJeux()
         {
@@ -313,9 +297,9 @@ namespace WebApplication1.Controllers
                 return null;
             }
         }
-        public IActionResult Checkemail()
+        public IActionResult ResultatInscription()
         {
-            return View("Checkemail");
+            return View("ResultatInscription");
         }
         public IActionResult Verifyemailpage()
         {

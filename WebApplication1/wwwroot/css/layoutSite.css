@@ -68,3 +68,15 @@ footer {
         height:2em;
         width:2em;
     }
+#affichageRecherche{
+    position:fixed;
+    display:block;
+    height:10vh;
+    width:10vw;
+    top:10vh;
+    right:10vw;
+    background-color:rgba(0,0,0,1);
+    z-index:2;
+    
+
+}

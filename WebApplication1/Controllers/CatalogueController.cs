@@ -37,17 +37,22 @@ namespace WebApplication1.Controllers
         {
             string query = "select J.* from jeux J order by J.TITRE";
             CatalogueViewModel catalogue_jeux = new CatalogueViewModel();
-            using (var connexion = new NpgsqlConnection(_connexionString))
+            try
             {
-                catalogue_jeux.ListJeux = connexion.Query<Jeux>(query).ToList();
+                using (var connexion = new NpgsqlConnection(_connexionString))
+                {
+                    catalogue_jeux.ListJeux = connexion.Query<Jeux>(query).ToList();
+                }
             }
-
-            // Récupère les types et thèmes pour les filtres
+            catch (Exception ex)
+            {
+                throw;
+            }
             catalogue_jeux = getTypesThemes(catalogue_jeux);
-
             ViewData["i"] = i;
             return View(catalogue_jeux);
         }
+
 
         // Affiche la page d'erreur
         [ValidateAntiForgeryToken]
@@ -178,7 +183,13 @@ namespace WebApplication1.Controllers
         public IActionResult Detail(int id)
         {
             Jeux jeu;
-            string queryjeux = "select j.*,t1.*,t2.* ,c.* from jeux j join JEUX_THEME JT1 on j.JEUID = jt1.JEUID join theme t1 on t1.THEMEID  = jt1.THEMEID join JEUX_TYPE JT2 on j.JEUID = jt2.JEUID join types t2 on t2.typeID  = jt2.typeID join COMMENTAIRES C  on c.JEUID = j.JEUID  where j.JEUID = @id";
+            string queryjeux = "select j.*,t1.*,t2.* ,c.* from jeux j " +
+                "left join JEUX_THEME JT1 on j.JEUID = jt1.JEUID " +
+                "left join theme t1 on t1.THEMEID  = jt1.THEMEID " +
+                "left join JEUX_TYPE JT2 on j.JEUID = jt2.JEUID " +
+                "left join types t2 on t2.typeID  = jt2.typeID " +
+                "left join COMMENTAIRES C  on c.JEUID = j.JEUID  " +
+                "where j.JEUID = @id";
             List<Jeux> jeux;
             using (var connexion = new NpgsqlConnection(_connexionString))
             {
@@ -359,6 +370,7 @@ namespace WebApplication1.Controllers
 
         // Affiche la page d'édition d'un jeu (GET)
         [HttpGet]
+        [Authorize(Roles = "Admin")]
 
         public IActionResult Editer(int id)
         {
@@ -407,6 +419,7 @@ namespace WebApplication1.Controllers
 
         // Traite la soumission du formulaire d'édition d'un jeu (POST)
         [HttpPost]
+        [Authorize(Roles = "Admin")]
 
         public IActionResult Editer([FromQuery] int id, [FromForm] Jeux jeu)
         {
@@ -511,7 +524,7 @@ namespace WebApplication1.Controllers
 
         // Affiche la page de création d'un nouveau jeu
         [HttpGet]
-
+        [Authorize(Roles = "Admin")]
         public IActionResult Nouveau()
         {
             EditeurJeuViewModel jeuViewModel = new() { action = "Nouveau", titre = "Nouveau Livre" };
@@ -524,7 +537,7 @@ namespace WebApplication1.Controllers
         // Traite la soumission du formulaire de création d'un nouveau jeu
         [ValidateAntiForgeryToken]
         [HttpPost]
-
+        [Authorize(Roles = "Admin")]
         public IActionResult Nouveau([FromForm] Jeux jeu)
         {
             try
@@ -626,6 +639,7 @@ namespace WebApplication1.Controllers
         // Supprime un jeu et ses liens (types, thèmes, commentaires)
         [ValidateAntiForgeryToken]
         [HttpPost]
+        [Authorize(Roles = "Admin")]
 
         public IActionResult Supprimer([FromQuery] int id, [FromForm] int idJeu)
         {
@@ -704,20 +718,24 @@ namespace WebApplication1.Controllers
             TempData["ValidateMessage"] = "Suppression effectuée.";
             return RedirectToAction("Index");
         }
+        [HttpGet]
         public IActionResult FaireCommentaire(int id)
         {
-            string query = "select titre from jeux where jeuid = @id";
+            String query = "select * from jeux where jeuid = @id";
+            Jeux jeu;
             using (var connexion = new NpgsqlConnection(_connexionString))
             {
-                string? titre = connexion.Query(query, new { id = id }).ToString();
-                ViewData["titre"] = titre;
-                ViewData["id"] = id;
+                jeu = connexion.Query<Jeux>(query, new { id = id }).ToList().SingleOrDefault();
+
             }
+            ViewData["titre"] = jeu.titre;
+            ViewData["id"] = id;
             var user = HttpContext.User;
             string? userId = user?.Claims?.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
             ViewData["utilid"] = userId;
             return View("commentaire");
         }
+        [HttpPost]
         public IActionResult EnvoyerCommentaire([FromForm] Commentaire comm)
         {
             string query = "insert into commentaires (jeuId, utilisateurId, commentaire, datecommentaires) values (@jeuId, @utilisateurId, @commentaire, @datecommentaires);";
