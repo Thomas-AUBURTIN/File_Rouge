@@ -2,26 +2,21 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-	Layout = "~/Views/Shared/_LayoutSite.cshtml";
+	 Layout = "~/Views/Shared/_LayoutSite.cshtml";
 }
-@model Commentaire
-@{
-    
+@model EditeurCommentaireViewModel
 
-	ViewData["Title"] = "commentaire";
-
-
-}
 <div class="commentaire">
-<form asp-controller="Catalogue" asp-action="EnvoyerCommentaire">
+<form asp-controller="Catalogue" asp-action="@Model.Action" method="post" enctype="multipart/form-data">
 
-	<h1>@ViewData["titre"]</h1>
+		<h1>@Model.Titre</h1>
 	<p>Ajouter un commentaire</p>
-	<textarea asp-for="@Model.commentaire"></textarea>
-		<input asp-for="@Model.note" min="0" max="5"/>
-	<input type="hidden" asp-for="@Model.jeuId" value=@ViewData["id"] />
-	<input type="hidden" asp-for="@Model.utilisateurId" value=@ViewData["utilid"] />
-		<input  type="hidden" asp-for="@Model.utilisateurNom" value=@ViewData["nom"] />
+	<textarea asp-for="Commentaire.commentaire" value="@Model.Commentaire.commentaire"></textarea>
+		<input asp-for="Commentaire.note" min="0" max="5" value="@Model.Commentaire.note"/>
+		<input type="hidden" asp-for="Commentaire.jeuId"  />
+		<input type="hidden" asp-for="Commentaire.utilisateurId"  />
 	<input type="submit" />
 </form>
+
 </div>
+

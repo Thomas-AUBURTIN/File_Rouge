@@ -22,6 +22,7 @@ builder.Services.Configure<CookiePolicyOptions>(options =>
     options.MinimumSameSitePolicy = SameSiteMode.Lax;
 
 });
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
@@ -37,9 +38,9 @@ if (!app.Environment.IsDevelopment())
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseCookiePolicy();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseCookiePolicy();
 
 app.MapControllerRoute(
     name: "default",

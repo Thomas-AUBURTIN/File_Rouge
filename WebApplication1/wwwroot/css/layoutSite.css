@@ -14,6 +14,7 @@ header {
     display: flex;
     flex-direction: column;
     background-color:#fffff0;
+    z-index: 5; /* Assurez-vous que c'est inférieur à celui de #affichageRecherche */
 }
 
 nav a {
@@ -68,16 +69,15 @@ footer {
         height:2em;
         width:2em;
     }
-#affichageRecherche{
-    position:fixed;
-    display:block;
-    height:10vh;
-    width:25vw;
-    top:10vh;
-    right:18vw;
-    background-color:rgba(0,0,0,1);
-    z-index:2;
-    color:white;
-    
-
+#affichageRecherche {
+    position: fixed;
+    display: none;
+    height: 10vh;
+    width: 25vw;
+    top: 10vh;
+    right: 18vw;
+    background-color: rgba(255, 255, 255, 0.9); /* Couleur semi-transparente */
+    z-index: 10; /* Augmentez la valeur pour qu'il soit au-dessus des autres éléments */
+    border: 2px solid blue; /* Bordure pour débogage */
+    pointer-events: auto;
 }

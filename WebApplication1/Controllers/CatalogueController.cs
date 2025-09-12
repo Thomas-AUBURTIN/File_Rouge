@@ -721,34 +721,46 @@ namespace WebApplication1.Controllers
         [HttpGet]
         public IActionResult FaireCommentaire(int id)
         {
-            String query = "select * from jeux where jeuid = @id";
-            Jeux jeu;
-            using (var connexion = new NpgsqlConnection(_connexionString))
-            {
-                jeu = connexion.Query<Jeux>(query, new { id = id }).ToList().SingleOrDefault();
+            EditeurCommentaireViewModel editer = new() { Action = "EnvoyerCommentaire", Titre = "Modification jeu", Commentaire = new Commentaire() };
 
-            }
-            ViewData["titre"] = jeu.titre;
-            ViewData["id"] = id;
+            ViewData["jeuid"] = id;
+
+
+            // Récupération de l'ID de l'utilisateur à partir du token
             var user = HttpContext.User;
             string? userId = user?.Claims?.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-            ViewData["utilid"] = userId;
-            return View("commentaire");
+
+            ViewData["utilisateurid"] = int.Parse(userId);
+
+
+
+            return View("commentaire", editer);
         }
         [HttpPost]
-        public IActionResult EnvoyerCommentaire([FromForm] Commentaire comm)
+        public IActionResult EnvoyerCommentaire([FromForm] Commentaire Commentaire)
         {
-            string query = "insert into commentaires (jeuId, utilisateurId, commentaire, datecommentaires) values (@jeuId, @utilisateurId, @commentaire, @datecommentaires);";
+            string querycheck = "SELECT nom from utilisateurs where utilisateurid=@utilisateurid;";
+
+            using (var connexioncheck = new NpgsqlConnection(_connexionString))
+            {
+                var nom = connexioncheck.ExecuteScalar<string>(querycheck, new { utilisateurid = Commentaire.utilisateurId });
+                Commentaire.utilisateurNom = nom;
+            }
+
+            string query = "insert into commentaires (jeuId, utilisateurId, commentaire, datecommentaires,note,utilisateurnom) values (@jeuId, @utilisateurId, @commentaire, @datecommentaires,@note,@nom);";
             using (var connexion = new NpgsqlConnection(_connexionString))
             {
                 try
                 {
                     int res = connexion.Execute(query, new
                     {
-                        jeuId = comm.jeuId,
-                        utilisateurId = comm.utilisateurId,
-                        commentaire = comm.commentaire,
-                        datecommentaires = DateTime.UtcNow
+                        jeuId = Commentaire.jeuId,
+                        utilisateurId = Commentaire.utilisateurId,
+                        commentaire = Commentaire.commentaire,
+                        datecommentaires = DateTime.UtcNow,
+                        note = Commentaire.note,
+                        nom = Commentaire.utilisateurNom
+
                     });
                     if (res != 1)
                     {
@@ -760,7 +772,7 @@ namespace WebApplication1.Controllers
                     ViewData["ValidateMessage"] = e.Message;
                     return View();
                 }
-                return RedirectToAction("Detail", new { id = comm.jeuId });
+                return RedirectToAction("Detail", new { id = Commentaire.jeuId });
 
             }
         }
@@ -778,5 +790,97 @@ namespace WebApplication1.Controllers
 
 
         }
+        public IActionResult SupprimerCommentaire([FromRoute] int id, [FromRoute] int jeuid)
+        {
+            string querySupprimercomm = "DELETE FROM commentaires WHERE jeuid=@jeuid and utilisateurid=@id;";
+            string queryNombresThemes = "SELECT count(*) FROM commentaires WHERE jeuid=@jeuid and utilisateurid=@id;";
+            using (var connexion = new NpgsqlConnection(_connexionString))
+            {
+                connexion.Open();
+                using (var transaction = connexion.BeginTransaction())
+                {
+                    // Supprime les liens thèmes
+                    int nbcomm = connexion.ExecuteScalar<int>(queryNombresThemes, new { id = id, jeuid = jeuid });
+                    int res = connexion.Execute(querySupprimercomm = "DELETE FROM commentaires WHERE jeuid=@jeuid and utilisateurid=@id;"
+, new { id = id });
+                    if (res != nbcomm)
+                    {
+                        transaction.Rollback();
+
+                        return RedirectToAction("Detail", jeuid);
+                    }
+                    return RedirectToAction("Detail", jeuid);
+
+
+                }
+            }
+        }
+
+        [HttpGet]
+        public IActionResult EditerCommentaire([FromQuery] int id, [FromQuery] int jeuid)
+        {
+            Commentaire commentaire = null;
+            EditeurCommentaireViewModel edit = new() { Action = "EditerCommentaire", Titre = "Modification Commentaire" };
+
+            string query = "SELECT * FROM commentaires WHERE jeuid = @jeuid AND utilisateurid = @id";
+
+            using (var connexion = new NpgsqlConnection(_connexionString))
+            {
+                try
+                {
+                    commentaire = connexion.QueryFirstOrDefault<Commentaire>(query, new { jeuid = jeuid, id = id });
+
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, "Erreur lors de la récupération du commentaire.");
+                }
+            }
+
+            edit.Commentaire = commentaire;
+            return View("Commentaire", edit);
+        }
+        [HttpPost]
+
+        public IActionResult EditerCommentaire([FromForm] Commentaire Commentaire)
+        {
+
+
+            string query = "UPDATE commentaires SET commentaire=@commentaire, note=@note, datecommentaires=@datecommentaires WHERE jeuid=@jeuid AND utilisateurid=@utilisateurid";
+
+            using (var connexion = new NpgsqlConnection(_connexionString))
+            {
+                try
+                {
+                    int res = connexion.Execute(query, new
+                    {
+                        commentaire = Commentaire.commentaire,
+                        note = Commentaire.note,
+                        datecommentaires = DateTime.UtcNow,
+                        jeuid = Commentaire.jeuId,
+                        utilisateurid = Commentaire.utilisateurId
+                    });
+                    if (res != 1)
+                    {
+                        throw new Exception("Erreur pendant la mise à jour du commentaire. Veuillez réessayer plus tard. Si le problème persiste merci de contacter l'administrateur.");
+                    }
+                }
+                catch (Exception e)
+                {
+                    ViewData["ValidateMessage"] = e.Message;
+                    return View();
+                }
+
+
+
+                    return RedirectToAction("VerifCommentaire", "Catalogue");
+
+            }
+
+        }
+        public IActionResult VerifCommentaire()
+        {
+            return View("VerifCommentaire");
+}
     }
 }

@@ -1,0 +1,43 @@
+﻿@{
+
+	ViewData["Title"] = "Profil";
+
+}
+@{
+	Layout = "~/Views/Shared/_LayoutSite.cshtml";
+}
+@model ProfilViewModel
+<div class="Profil">
+	<div id="comm">
+	<p>Nom : @Model.utilisateur.nom</p>
+	<p>Pseudo : @Model.utilisateur.pseudo</p>
+	<p>Email : @Model.utilisateur.email</p>
+	<p>Téléphone : @Model.utilisateur.Telephone</p>
+	</div>
+	<h3>Commentaires :</h3>
+	<ul>
+		@foreach (Commentaire commentaire in @Model.Commentaires)
+		{
+			<li>
+				<p>@commentaire.jeuNom</p>
+				<p>@commentaire.commentaire</p>
+				<p>
+					@commentaire.note
+				</p>
+				<p>@commentaire.datecommentaires</p>
+				<a asp-controller="Catalogue" asp-action="SupprimerCommentaire" asp-route-id="@commentaire.utilisateurId" asp-route-jeuid="@commentaire.jeuId">
+					supprimer
+				</a>
+				<a asp-controller="Catalogue" asp-action="EditerCommentaire" asp-route-id="@commentaire.utilisateurId" asp-route-jeuid="@commentaire.jeuId">
+					editer
+				</a>
+			</li>
+
+		}
+	</ul>
+
+	<a asp-controller="Acceuil" asp-action="Index">retour</a>
+</div>
+
+
+

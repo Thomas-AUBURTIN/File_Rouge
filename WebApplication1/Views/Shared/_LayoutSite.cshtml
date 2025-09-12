@@ -3,8 +3,8 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>@ViewData["Title"] - WebApplication1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 	<link rel="stylesheet" href="~/WebApplication1.styles.css" asp-append-version="true" />
 	<link rel="stylesheet" href="~/css/normalize.css" asp-append-version="true">
@@ -37,7 +37,7 @@
 						<input id="inputJeu" type="text" placeholder="Nom du jeu…">
 						
 					</form>
-					<div id="affichageRecherche"></div>
+					<div id="affichageRecherche"><p>test</p></div>
 				}
 
 				@if (User.Identity.IsAuthenticated)
@@ -45,6 +45,7 @@
 					<a asp-controller="Access" asp-action="SignOut">Se déconnecter</a>
 
 				}
+				<a asp-controller="access" asp-action="Profil">Profil</a>
 				
 			</nav>
 		</div>

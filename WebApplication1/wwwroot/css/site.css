@@ -657,3 +657,21 @@ div.commentaire p{
     font-size:1.5em;
 }
 /*fin commentaire*/
+/*Profil*/
+div.Profil {
+    height: 85vh;
+    width: 100vw;
+    position: fixed;
+    top: 10vh;
+    left: 0;
+    display: flex;
+    flex-direction:column;
+    align-items: center;
+    justify-content: center;
+
+}
+div.Profil #comm{
+    display:flex;
+        text-align:start;
+}
+/*fin Profil*/

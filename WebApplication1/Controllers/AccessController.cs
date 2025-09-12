@@ -279,7 +279,7 @@ namespace WebApplication1.Controllers
         public List<Jeux> ListeJeux()
         {
             //Requête SQL pour récupérer certains jeux
-            string query = "select * from JEUX where jeuid=1 or jeuid=2 or jeuid=3 or jeuid=4 ;";
+            string query = "SELECT * FROM JEUX WHERE AGE(now(), DATEAJOUT) < INTERVAL '1 month';";
             List<Jeux> ListJeux = new List<Jeux>();
             try
             {
@@ -289,6 +289,27 @@ namespace WebApplication1.Controllers
                     ListJeux = connexion.Query<Jeux>(query).ToList();
                 }
                 // Retourne la vue avec la liste des jeux
+                if (ListJeux.Count() < 2)
+                {
+                    string query4 = "SELECT * FROM JEUX ORDER BY DATEAJOUT DESC LIMIT 4;";
+                    List<Jeux> derniersJeux = new List<Jeux>();
+                    try
+                    {
+                        // Connexion à la base et exécution de la requête
+                        using (var connexion = new NpgsqlConnection(_connexionString))
+                        {
+                            ListJeux = connexion.Query<Jeux>(query4).ToList();
+                        }
+                    }
+                    catch
+                    {
+                        // En cas d'erreur, retourne une liste vide
+                        return new List<Jeux>();
+                    }
+
+
+
+                }
                 return ListJeux;
             }
             catch
@@ -305,5 +326,30 @@ namespace WebApplication1.Controllers
         {
             return View("Verifyemailpage");
         }
+
+        public IActionResult Profil()
+        {
+            ProfilViewModel profil = new ProfilViewModel();
+
+            string query = "SELECT * FROM Utilisateurs WHERE utilisateurid=@id";
+            using (var connexion = new NpgsqlConnection(_connexionString))
+            {
+                profil.utilisateur = connexion.QuerySingle<Utilisateur>(query, new { id = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!) });
+            }
+            string querycom = "SELECT C.*, J.titre AS jeuNom " +
+                "FROM Commentaires C  " +
+                "JOIN Jeux J ON C.jeuId = J.jeuid " +
+                "WHERE C.utilisateurid=@id";
+            using (var connexion = new NpgsqlConnection(_connexionString))
+            {
+                profil.Commentaires = connexion.Query<Commentaire>(querycom, new { id = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!) }).ToList();
+            }
+
+
+            TempData["profil"] = "profil";
+            return View("Profil",profil);
+        }
+
     }
+
 }

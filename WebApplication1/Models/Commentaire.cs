@@ -9,6 +9,7 @@ namespace WebApplication1.Models
         public int jeuId { get; set; }
 
         public String utilisateurNom { get; set; }
+        public String jeuNom { get; set; }
         // Identifiant de l'utilisateur ayant laissé le commentaire
         public int utilisateurId { get; set; }
 

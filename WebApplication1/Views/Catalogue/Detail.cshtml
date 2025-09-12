@@ -12,19 +12,20 @@
 }
 <div class="detail">
 	<div class="centre">
-	<h1>@Model.titre</h1>
-	<img src="@Model.image" class="image" />
-	<p class="description">@Model.description</p>
+		<h1>@Model.titre</h1>
+		<img src="@Model.image" class="image" />
+		<p class="description">@Model.description</p>
 	</div>
 	<p>nombre de joueur conseiller : @Model.nombrejoueursrecommandes</p>
 	<p>temps de jeu moyen : @Model.tempsjeumoyen</p>
-	<ul>Theme :
-	@foreach (Theme theme in @Model.themes)
-	{
-		<li>@theme.nom</li>
+	<ul>
+		Theme :
+		@foreach (Theme theme in @Model.themes)
+		{
+			<li>@theme.nom</li>
 
-	}
-	
+		}
+
 	</ul>
 	<ul>
 		Type :
@@ -33,7 +34,7 @@
 			<li>@type.nom</li>
 
 		}
-		
+
 	</ul>
 	<ul>
 		Commentaire :
@@ -43,16 +44,26 @@
 				<p>@comm.commentaire</p>
 				<p>@comm.utilisateurNom - @comm.datecommentaires</p>
 				<p>@comm.note</p>
-				</li>
+				@if (comm.utilisateurId.ToString() == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value)
+				{
+					<a asp-controller="Catalogue" asp-action="SupprimerCommentaire" asp-route-id="@comm.utilisateurId" asp-route-jeuid="@Model.jeuid">
+						supprimer
+					</a>
+					<a asp-controller="Catalogue" asp-action="EditerCommentaire" asp-route-id="@comm.utilisateurId" asp-route-jeuid="@Model.jeuid">
+						editer
+					</a>
+				}
+				<p>il y a @Model.commentaires.Count commentaires</p>
+			</li>
 
 		}
-		
+
 	</ul>
 	@{
 
 		bool commentaire = (bool)ViewData["comm"];
 
-		if(commentaire)
+		if (commentaire)
 		{
 			<a asp-controller="Catalogue" asp-action="FaireCommentaire" asp-route-id="@Model.jeuid" asp-route-userid="@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value">
 				> faire un commentaire
@@ -65,5 +76,5 @@
 
 	}
 
-	
+
 </div>
