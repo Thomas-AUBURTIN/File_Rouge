@@ -58,6 +58,7 @@ namespace WebApplication1.Controllers
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult SignUp([FromForm] Utilisateur utilisateur)
         {
             // Vérifie la validité du modèle
@@ -186,6 +187,7 @@ namespace WebApplication1.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> SignIn([FromForm] Utilisateur utilisateur)
         {
 
@@ -278,44 +280,51 @@ namespace WebApplication1.Controllers
 
         public List<Jeux> ListeJeux()
         {
-            //Requête SQL pour récupérer certains jeux
             string query = "SELECT * FROM JEUX WHERE AGE(now(), DATEAJOUT) < INTERVAL '1 month';";
             List<Jeux> ListJeux = new List<Jeux>();
             try
             {
-                // Connexion à la base et exécution de la requête
                 using (var connexion = new NpgsqlConnection(_connexionString))
                 {
-                    ListJeux = connexion.Query<Jeux>(query).ToList();
+                    try
+                    {
+                        connexion.Open(); // Ouverture explicite de la connexion
+                        ListJeux = connexion.Query<Jeux>(query).ToList();
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception("Erreur lors de la connexion à la base de données : " + ex.Message, ex);
+                    }
                 }
-                // Retourne la vue avec la liste des jeux
+
                 if (ListJeux.Count() < 2)
                 {
                     string query4 = "SELECT * FROM JEUX ORDER BY DATEAJOUT DESC LIMIT 4;";
-                    List<Jeux> derniersJeux = new List<Jeux>();
                     try
                     {
-                        // Connexion à la base et exécution de la requête
                         using (var connexion = new NpgsqlConnection(_connexionString))
                         {
-                            ListJeux = connexion.Query<Jeux>(query4).ToList();
+                            try
+                            {
+                                connexion.Open();
+                                ListJeux = connexion.Query<Jeux>(query4).ToList();
+                            }
+                            catch (Exception ex)
+                            {
+                                throw new Exception("Erreur lors de la connexion à la base de données : " + ex.Message, ex);
+                            }
                         }
                     }
                     catch
                     {
-                        // En cas d'erreur, retourne une liste vide
                         return new List<Jeux>();
                     }
-
-
-
                 }
                 return ListJeux;
             }
-            catch
+            catch (Exception ex)
             {
-                // En cas d'erreur, retourne une page NotFound
-                return null;
+                throw new Exception("Erreur inattendue lors de l'exécution de la méthode ListeJeux : " + ex.Message, ex);
             }
         }
         public IActionResult ResultatInscription()

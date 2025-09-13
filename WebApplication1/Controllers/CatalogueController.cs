@@ -41,12 +41,20 @@ namespace WebApplication1.Controllers
             {
                 using (var connexion = new NpgsqlConnection(_connexionString))
                 {
-                    catalogue_jeux.ListJeux = connexion.Query<Jeux>(query).ToList();
+                    try
+                    {
+                        connexion.Open();
+                        catalogue_jeux.ListJeux = connexion.Query<Jeux>(query).ToList();
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception("Erreur lors de la connexion à la base de données : " + ex.Message, ex);
+                    }
                 }
             }
             catch (Exception ex)
             {
-                throw;
+                throw new Exception("Erreur inattendue lors de l'exécution de la méthode Index : " + ex.Message, ex);
             }
             catalogue_jeux = getTypesThemes(catalogue_jeux);
             ViewData["i"] = i;

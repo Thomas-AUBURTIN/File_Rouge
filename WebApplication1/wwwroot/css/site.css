@@ -243,7 +243,7 @@ div.privacy {
     justify-content: space-around;
     align-items: center;
     gap: 2%;
-    overflow: scroll;
+    overflow-y: scroll;
     scroll-behavior: smooth;
 }
 
@@ -346,13 +346,16 @@ div.inscription {
 
 /*page contact*/
 div.contact {
-    height: 100%;
+    position: fixed;
+    top: 10vh;
+    height: 85vh;
     width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: start;
     align-items: center;
     gap: 1%;
+    overflow-y: scroll;
 }
 
     div.contact form {
@@ -401,11 +404,11 @@ div.contact {
         width: 5em;
     }
 
-    div.contact input, div.contact textarea, div.contact form, div.contact select, div.contact button {
-        background-color: rgb(255, 255, 255, 0.7);
-        border: 2px solid rgb(255, 255, 255);
-        border-radius: 10px;
-    }
+        div.contact input, div.contact textarea, div.contact form, div.contact select, div.contact button ,div.contact div#white {
+            background-color: rgb(255, 255, 255, 0.7);
+            border: 2px solid rgb(255, 255, 255);
+            border-radius: 10px;
+        }
 
     div.contact .left {
     }
@@ -591,7 +594,7 @@ div.detail {
     top: 10vh;
     left: 0;
     
-    overflow: scroll;
+    overflow-y: scroll;
     padding:3vh;
 }
 
