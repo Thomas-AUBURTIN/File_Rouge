@@ -41,20 +41,12 @@ namespace WebApplication1.Controllers
             {
                 using (var connexion = new NpgsqlConnection(_connexionString))
                 {
-                    try
-                    {
-                        connexion.Open();
-                        catalogue_jeux.ListJeux = connexion.Query<Jeux>(query).ToList();
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new Exception("Erreur lors de la connexion à la base de données : " + ex.Message, ex);
-                    }
+                    catalogue_jeux.ListJeux = connexion.Query<Jeux>(query).ToList();
                 }
             }
             catch (Exception ex)
             {
-                throw new Exception("Erreur inattendue lors de l'exécution de la méthode Index : " + ex.Message, ex);
+                throw;
             }
             catalogue_jeux = getTypesThemes(catalogue_jeux);
             ViewData["i"] = i;
@@ -745,6 +737,7 @@ namespace WebApplication1.Controllers
             return View("commentaire", editer);
         }
         [HttpPost]
+        [ValidateAntiForgeryToken] // Ajouté
         public IActionResult EnvoyerCommentaire([FromForm] Commentaire Commentaire)
         {
             string querycheck = "SELECT nom from utilisateurs where utilisateurid=@utilisateurid;";
@@ -798,6 +791,8 @@ namespace WebApplication1.Controllers
 
 
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult SupprimerCommentaire([FromRoute] int id, [FromRoute] int jeuid)
         {
             string querySupprimercomm = "DELETE FROM commentaires WHERE jeuid=@jeuid and utilisateurid=@id;";
@@ -849,7 +844,7 @@ namespace WebApplication1.Controllers
             return View("Commentaire", edit);
         }
         [HttpPost]
-
+        [ValidateAntiForgeryToken] 
         public IActionResult EditerCommentaire([FromForm] Commentaire Commentaire)
         {
 
@@ -881,7 +876,7 @@ namespace WebApplication1.Controllers
 
 
 
-                    return RedirectToAction("VerifCommentaire", "Catalogue");
+                return RedirectToAction("VerifCommentaire", "Catalogue");
 
             }
 
@@ -889,6 +884,6 @@ namespace WebApplication1.Controllers
         public IActionResult VerifCommentaire()
         {
             return View("VerifCommentaire");
-}
+        }
     }
 }

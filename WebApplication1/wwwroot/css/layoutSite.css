@@ -24,13 +24,19 @@ nav a {
     text-decoration: none;
 }
 
-.lien {
-    position:fixed;
-    right : 5vw;
-    width: 33vw;
-    display:flex;
-    flex-direction:row;
-    justify-content: space-between;
+#bloc {
+   
+    position: fixed;
+    right: 0vw;
+    top: 7vh;
+    width: 10vw;
+    height:20vh;
+    display: none;
+    flex-direction: column;
+    justify-content:center;
+    background-color: antiquewhite;
+    padding: 1em;
+    
 }
 
 .top-header {
@@ -42,10 +48,13 @@ nav a {
     justify-content: space-around;
     align-items: center;
     padding-right: 2em;
+    
 }
 
 #logo {
     height: 10vh;
+    
+    
 }
 
 footer {
@@ -72,12 +81,28 @@ footer {
 #affichageRecherche {
     position: fixed;
     display: none;
-    height: 10vh;
-    width: 25vw;
-    top: 10vh;
-    right: 18vw;
-    background-color: rgba(255, 255, 255, 0.9); /* Couleur semi-transparente */
-    z-index: 10; /* Augmentez la valeur pour qu'il soit au-dessus des autres éléments */
-    border: 2px solid blue; /* Bordure pour débogage */
+    flex-direction:column;
+    height: 22vh;
+    width: 15vw;
+    top: 6vh;
+    right: 3vw;
+    background-color: rgba(255, 255, 255, 0.9);
+    z-index: 10;
+    border: 2px solid blue;
     pointer-events: auto;
+    overflow-y:scroll;
+}
+#menu {
+    height: 3em;
+    
+}
+#menuheader {
+    display: flex;
+    flex-direction: row;
+    width: 10vh;
+    align-items:center;
+}
+#bloc.actif, #affichageRecherche.actif {
+    display: flex;
+    
 }

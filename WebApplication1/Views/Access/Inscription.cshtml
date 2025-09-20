@@ -1,46 +1,49 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@model Utilisateur
-@* @{
-    var Now = DateTime.Now;
-    var eye = $"js/eye.js?q={Now.Ticks}";
-    
-    ViewData["Title"] = "Inscription";
-}
-
-<script src="@eye" defer></script> *@
-<script src="~/js/eye.js" defer asp-append-version="true"></script>
+﻿@model Utilisateur
 
 <div class="inscription">
+	<script src="~/js/eye.js" defer asp-append-version="true"></script>
+	<!-- Affichage des messages d'erreur ou de succès -->
+	@if (TempData["ErrorMessage"] != null)
+	{
+		<div class="alert alert-danger">
+			@TempData["ErrorMessage"]
+		</div>
+	}
 
-        <form asp-controller="Access" asp-action="SignUp" method="post">
-        <h1 class="fusion">Inscription</h1>
-            <label asp-for="@Model.nom"> nom : </label>
-            <input asp-for="@Model.nom">
-            <label asp-for="@Model.pseudo">pseudo : </label>
-            <input asp-for="@Model.pseudo">
-            <label asp-for="@Model.Telephone">Telephone : </label>
-            <input asp-for="@Model.Telephone">
-            <label asp-for="@Model.email">Email : </label>
-            <input asp-for="@Model.email">
-        <label asp-for="@Model.motdePasse">mot de passe : </label>
-            <div id="div-eye">
-            <input id="Utilisateur_motdePasse" asp-for="@Model.motdePasse">
-                <img src="../img/site/oeil.png" alt="" id="eye">
-            </div>
+	<form asp-controller="Access" asp-action="SignUp" method="post">
+		<h1 class="fusion">Inscription</h1>
+			<label asp-for="nom"></label>
+			<input asp-for="nom" class="form-control" />
+			<span asp-validation-for="nom" class="text-danger"></span>
 
-            <input type="submit">
-        </form>
-        <button><a asp-controller="Access" asp-action="index">retour</a></button>
-    </div>
-@{
-    <p>@ViewData["ValidateMessage"]</p>
-}
-    
+			<label asp-for="pseudo"></label>
+			<input asp-for="pseudo" class="form-control" />
+			<span asp-validation-for="pseudo" class="text-danger"></span>
 
-    
+			<label asp-for="email"></label>
+			<input asp-for="email" class="form-control" />
+			<span asp-validation-for="email" class="text-danger"></span>
 
+			<label asp-for="motdePasse"></label>
+			<div id="div-eye">
+				<input id="Utilisateur_motdePasse" asp-for="motdePasse" type="password" class="form-control" />
+				
+				<img src="~/img/site/oeil.png" alt="" id="eye">
+			</div>
+		<span asp-validation-for="motdePasse" class="text-danger"></span>
+
+			<label asp-for="Telephone"></label>
+			<input asp-for="Telephone" class="form-control" />
+			<span asp-validation-for="Telephone" class="text-danger"></span>
+			<div></div>
+
+		<button type="submit">S'inscrire</button>
+	</form>
+	<button><a asp-controller="Access" asp-action="index">retour</a></button>
+	<div>
+		<span asp-validation-summary="All" class="text-danger"></span>
+	</div>
+</div>
 
 
 

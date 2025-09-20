@@ -61,94 +61,95 @@ namespace WebApplication1.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult SignUp([FromForm] Utilisateur utilisateur)
         {
-            // Vérifie la validité du modèle
+            // Vérifie si les données du formulaire sont valides
             if (!ModelState.IsValid)
             {
-                throw new Exception("Les données rentrées ne sont pas correctes, veuillez réessayer.");
+                TempData["ErrorMessage"] = "Les données saisies ne sont pas valides. Veuillez vérifier les champs.";
+                return View("inscription", utilisateur);
             }
-            string querysecure = "select * from UTILISATEURS U where pseudo=@pseudo or nom = @nom or telephone = @tel;";
+
+            // Requêtes SQL pour vérifier les doublons et insérer un nouvel utilisateur
+            string querysecure = "select * from UTILISATEURS where pseudo=@pseudo or nom = @nom or telephone = @tel;";
             string query = "INSERT INTO Utilisateurs (nom,email,MOTDEPASSE,telephone,verificationtoken,administrateur,pseudo,dateinscription,emailverified) VALUES (@nom,@email,@mdp,@tel,@veriftoken,false,@pseudo,@date,false)";
 
-
-
-            using (var transaction = new NpgsqlConnection(_connexionString))
+            try
             {
-                int secure = transaction.ExecuteScalar<int>(querysecure, new
+                using (var transaction = new NpgsqlConnection(_connexionString))
                 {
-                    nom = utilisateur.nom,
-                    tel = utilisateur.Telephone,
-                    pseudo = utilisateur.pseudo,
+                    transaction.Open();
 
-                });
-                if (secure > 0)
-                {
-                    ViewData["ValidateMessage"] = " Utilisateur deja connue";
-
-                    return RedirectToAction("Index", "Access");
-
-                }
-
-
-
-                // hachage du mot de passe
-                string motDePasseHache = BC.HashPassword(utilisateur.motdePasse);
-                // génération du token de vérification d'adresse mail
-                byte[] time = BitConverter.GetBytes(DateTime.UtcNow.ToBinary());
-                byte[] key = Guid.NewGuid().ToByteArray();
-                string token = Convert.ToBase64String(time.Concat(key).ToArray());
-                try
-                {
-                    using (var connexion = new NpgsqlConnection(_connexionString))
+                    // Vérifie si un utilisateur avec les mêmes informations existe déjà
+                    int secure = transaction.ExecuteScalar<int>(querysecure, new
                     {
-                        int res = connexion.Execute(query, new
-                        {
-                            nom = utilisateur.nom,
-                            email = utilisateur.email,
-                            tel = utilisateur.Telephone,
-                            mdp = motDePasseHache,
-                            veriftoken = token,
-                            pseudo = utilisateur.pseudo,
-                            date = DateTime.UtcNow
+                        nom = utilisateur.nom,
+                        tel = utilisateur.Telephone,
+                        pseudo = utilisateur.pseudo,
+                    });
 
-                        });
-
-                        if (res != 1)
-                        {
-                            throw new Exception("Erreur pendant l'inscription, essai plus tard.");
-                        }
-                        else
-                        {
-                            UriBuilder uriBuilder = new UriBuilder();
-                            uriBuilder.Port = 5248;
-                            uriBuilder.Path = "/Access/Verifyemailpage";
-                            uriBuilder.Query = $"email={HttpUtility.UrlEncode(utilisateur.email)}&token={HttpUtility.UrlEncode(token)}";
-
-                            // envoi du mail avec le token
-                            MailMessage mail = new MailMessage();
-                            mail.From = new MailAddress("app@test.fr");
-                            mail.To.Add(new MailAddress(utilisateur.email));
-                            mail.Subject = "Vérification d'email";
-                            mail.Body = $"<a href={uriBuilder.Uri}>Vérifier l'email</a>";
-                            mail.IsBodyHtml = true; // permet de dire que le corps du message contient de l'html afin que le client mail affiche le corps du message en html (comme un navigateur)
-
-                            using (var smtp = new SmtpClient("localhost", 587))
-                            {
-                                smtp.Credentials = new NetworkCredential("app@test.fr", "123456");
-                                smtp.EnableSsl = false; // devrait être à true mais l'environnement de test ne le permet pas
-                                smtp.Send(mail);
-                            }
-
-                            return RedirectToAction("ResultatInscription", "Access");
-                        }
+                    if (secure > 0)
+                    {
+                        TempData["ErrorMessage"] = "Un utilisateur avec ces informations existe déjà.";
+                        return View("inscription", utilisateur);
                     }
-                }
-                catch (Exception e)
-                {
-                    ViewData["ValidateMessage"] = e.Message;  // TODO à ajouter dans la vue
-                    return RedirectToAction("SignUp", "Access");
+
+                    // Hachage du mot de passe pour sécuriser les données
+                    string motDePasseHache = BC.HashPassword(utilisateur.motdePasse);
+
+                    // Génération d'un token unique pour la vérification de l'email
+                    byte[] time = BitConverter.GetBytes(DateTime.UtcNow.ToBinary());
+                    byte[] key = Guid.NewGuid().ToByteArray();
+                    string token = Convert.ToBase64String(time.Concat(key).ToArray());
+
+                    // Insertion de l'utilisateur dans la base de données
+                    int res = transaction.Execute(query, new
+                    {
+                        nom = utilisateur.nom,
+                        email = utilisateur.email,
+                        tel = utilisateur.Telephone,
+                        mdp = motDePasseHache,
+                        veriftoken = token,
+                        pseudo = utilisateur.pseudo,
+                        date = DateTime.UtcNow
+                    });
+
+                    if (res != 1)
+                    {
+                        throw new Exception("Erreur pendant l'inscription, veuillez réessayer plus tard.");
+                    }
+
+                    // Préparation et envoi d'un email de vérification
+                    UriBuilder uriBuilder = new UriBuilder();
+                    uriBuilder.Port = 5248;
+                    uriBuilder.Path = "/Access/Verifyemailpage";
+                    uriBuilder.Query = $"email={HttpUtility.UrlEncode(utilisateur.email)}&token={HttpUtility.UrlEncode(token)}";
+
+                    MailMessage mail = new MailMessage
+                    {
+                        From = new MailAddress("app@test.fr"),
+                        Subject = "Vérification d'email",
+                        Body = $"<a href={uriBuilder.Uri}>Vérifier l'email</a>",
+                        IsBodyHtml = true
+                    };
+                    mail.To.Add(new MailAddress(utilisateur.email));
+
+                    using (var smtp = new SmtpClient("localhost", 587))
+                    {
+                        smtp.Credentials = new NetworkCredential("app@test.fr", "123456");
+                        smtp.EnableSsl = false; // Devrait être à true en production
+                        smtp.Send(mail);
+                    }
+
+                    TempData["SuccessMessage"] = "Inscription réussie ! Veuillez vérifier votre email pour valider votre compte.";
+                    return RedirectToAction("ResultatInscription", "Access");
                 }
             }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Une erreur est survenue : {ex.Message}";
+                return View("inscription", utilisateur);
+            }
         }
+
 
         public IActionResult VerifyEmail([FromQuery] string email, [FromQuery] string token)
         {
@@ -192,7 +193,7 @@ namespace WebApplication1.Controllers
         {
 
 
-            // TODO enlever l'étoile
+           
             string query = "SELECT * FROM Utilisateurs WHERE pseudo=@pseudo AND emailverified=true";
             try
             {
@@ -276,7 +277,7 @@ namespace WebApplication1.Controllers
             return RedirectToAction("Index", "Access");
         }
 
-        
+
 
         public List<Jeux> ListeJeux()
         {
@@ -335,6 +336,7 @@ namespace WebApplication1.Controllers
         {
             return View("Verifyemailpage");
         }
+        
 
         public IActionResult Profil()
         {
@@ -356,7 +358,7 @@ namespace WebApplication1.Controllers
 
 
             TempData["profil"] = "profil";
-            return View("Profil",profil);
+            return View("Profil", profil);
         }
 
     }

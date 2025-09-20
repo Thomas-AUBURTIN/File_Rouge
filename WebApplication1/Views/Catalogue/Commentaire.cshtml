@@ -13,8 +13,8 @@
 	<p>Ajouter un commentaire</p>
 	<textarea asp-for="Commentaire.commentaire" value="@Model.Commentaire.commentaire"></textarea>
 		<input asp-for="Commentaire.note" min="0" max="5" value="@Model.Commentaire.note"/>
-		<input type="hidden" asp-for="Commentaire.jeuId"  />
-		<input type="hidden" asp-for="Commentaire.utilisateurId"  />
+		<input type="hidden" asp-for="Commentaire.jeuId" value="@Model.Commentaire.jeuId" />  
+		<input type="hidden" asp-for="Commentaire.utilisateurId" value="@Model.Commentaire.utilisateurId" />  
 	<input type="submit" />
 </form>
 

@@ -18,33 +18,33 @@
 			<a asp-controller="Acceuil" asp-action="Index"><img src="~/img/site/webclip-Photoroom.png" alt="logo" id="logo"></a>
 			<h1>LES MAUVAIS JOUEURS</h1>
 
-			<div></div>
-			<nav class="lien">
+			<div id="menuheader">
+				<form id="formRecherche">
+					<input id="inputJeu" type="text" placeholder="Nom du jeu…">
+
+				</form>
+				<img id="menu" src="~/img/site/menu.png" />
+			</div>
+			<div id="affichageRecherche"></div>
+			<nav id="bloc">
 				<a asp-controller="Catalogue" asp-action="index">Catalogue de jeu</a>
+				<br>
 				@if (User.IsInRole("Admin"))
 				{
 					<a asp-controller="Catalogue" asp-action="Nouveau">Nouveau</a>
+					<br>
+				}
+					
+				
 
-				}
-				@{
-					var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
-					var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
-				}
-				@if (currentController == "Catalogue" && currentAction == "index")
-				{
-					<form id="formRecherche">
-						<input id="inputJeu" type="text" placeholder="Nom du jeu…">
-						
-					</form>
-					<div id="affichageRecherche"><p>test</p></div>
-				}
-
+				<a asp-controller="access" asp-action="Profil">Profil</a>
+				<br>
 				@if (User.Identity.IsAuthenticated)
 				{
 					<a asp-controller="Access" asp-action="SignOut">Se déconnecter</a>
-
+					
 				}
-				<a asp-controller="access" asp-action="Profil">Profil</a>
+
 				
 			</nav>
 		</div>
@@ -67,7 +67,8 @@
 	<script src="~/lib/jquery/dist/jquery.min.js"></script>
 	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 	<script src="~/js/site.js" asp-append-version="true"></script>
-	<script src="~/js/recherche.js" asp-append-version="true"></script>
+	<script src="~/js/menu.js?v=1.0"></script>
+	<script src="~/js/recherche.js?v=1.0"></script>
 	@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

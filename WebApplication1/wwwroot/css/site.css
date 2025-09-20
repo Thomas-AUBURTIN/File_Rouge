@@ -110,9 +110,14 @@ html {
     }
 
     #index .slides {
-        position: relative;
-        height: 9vh;
-        width: 9vw;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden; /* Assure que le contenu débordant est masqué */
+        z-index: 1; /* Assure que l'image est au-dessus des autres éléments si nécessaire */
+        object-fit: cover;
     }
 
     #index .container-slide {
@@ -122,6 +127,8 @@ html {
     }
 
     #index .slides {
+        position:fixed;
+        top: 0;
         height: 10em;
         width: 12em;
     }
@@ -144,7 +151,7 @@ html {
 
 .fusion {
     grid-column-start: 1;
-    grid-column-end: 3;
+    grid-column-end: 4;
 }
 /* Fading animation */
 .fade {
@@ -211,8 +218,8 @@ html {
 
     #index .slides {
         position: relative;
-        height: 10em;
-        width: 12em;
+        height: 70%;
+        width: auto;
         ()
     }
 
@@ -271,7 +278,7 @@ div.privacy {
 div.inscription form {
     display: grid;
     grid-auto-flow: row;
-    grid-template: 1fr 1fr 1fr 1fr 1fr 1fr/ 50% 50%;
+    grid-template: 1fr 1fr 1fr 1fr 1fr 1fr/ 1fr 1fr 1fr;
     justify-content: end;
     align-items: center;
     background-color: rgb(255, 255, 255, 0.7);
@@ -314,7 +321,7 @@ div.inscription {
     }
 
         div.inscription input[type="submit"] {
-            grid-column: 1 / span 2;
+            grid-column: 1 / span 3;
             justify-self: center;
             width: 20%;
         }
@@ -404,11 +411,11 @@ div.contact {
         width: 5em;
     }
 
-        div.contact input, div.contact textarea, div.contact form, div.contact select, div.contact button ,div.contact div#white {
-            background-color: rgb(255, 255, 255, 0.7);
-            border: 2px solid rgb(255, 255, 255);
-            border-radius: 10px;
-        }
+    div.contact input, div.contact textarea, div.contact form, div.contact select, div.contact button, div.contact div#white {
+        background-color: rgb(255, 255, 255, 0.7);
+        border: 2px solid rgb(255, 255, 255);
+        border-radius: 10px;
+    }
 
     div.contact .left {
     }
@@ -433,6 +440,7 @@ div.acceuil {
     overflow-x: hidden; /* empêche le scroll horizontal */
     box-sizing: border-box;
 }
+
     div.acceuil .video-overlay {
         position: absolute;
         top: 0;
@@ -443,14 +451,14 @@ div.acceuil {
         z-index: -1; /* Sous les textes, sur la vidéo */
         pointer-events: none; /* Pour ne pas gêner l’interaction du texte */
     }
-        div .acceuil .presentation {
+
+    div .acceuil .presentation {
         position: relative; /* pour positionner les éléments enfants absolus */
         width: 100vw;
         height: 60vh;
         display: flex;
         box-sizing: border-box;
         overflow: hidden; /* coupe les débordements internes éventuels */
-
     }
 
     div.acceuil #video {
@@ -499,7 +507,7 @@ div.acceuil {
         font-family: Cardeniomodern reg, sans-serif;
         font-weight: 800;
         line-height: 66px;
-        font-size:1.2em;
+        font-size: 1.2em;
     }
 
     div.acceuil .concept {
@@ -533,16 +541,17 @@ div.acceuil {
         box-sizing: border-box;
         font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
         font-size: 1.2em;
-        padding-top:3vh;
-        padding-left:3vw;
+        padding-top: 3vh;
+        padding-left: 3vw;
     }
+
 #img1, #img2, #img3, #img4 {
     height: 30vh;
 }
 
 
-        /*fin page acceuil*/
-        /* page catalogue*/
+/*fin page acceuil*/
+/* page catalogue*/
 div .catalogue {
     height: 85vh;
     width: 100vw;
@@ -550,8 +559,6 @@ div .catalogue {
     top: 10vh;
     left: 0;
     overflow-y: scroll;
-
-    
 }
 
     div.catalogue .liste-jeux {
@@ -559,7 +566,6 @@ div .catalogue {
         width: 100vw;
         display: flex;
         flex-direction: column;
-       
     }
 
     div.catalogue .game {
@@ -583,7 +589,7 @@ div .catalogue {
     div.catalogue .description {
         overflow: hidden;
     }
- 
+
 
 /*fin page catalogue*/
 /*détails*/
@@ -593,9 +599,8 @@ div.detail {
     position: fixed;
     top: 10vh;
     left: 0;
-    
     overflow-y: scroll;
-    padding:3vh;
+    padding: 3vh;
 }
 
     div.detail .image {
@@ -646,19 +651,19 @@ div.commentaire {
     position: fixed;
     top: 10vh;
     left: 0;
-    display:flex;
-    
-    align-items:center;
-    justify-content:center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
-div.commentaire textarea{
-    height:30vh;
-    width: 60vh;
 
-}
-div.commentaire p{
-    font-size:1.5em;
-}
+    div.commentaire textarea {
+        height: 30vh;
+        width: 60vh;
+    }
+
+    div.commentaire p {
+        font-size: 1.5em;
+    }
 /*fin commentaire*/
 /*Profil*/
 div.Profil {
@@ -668,13 +673,42 @@ div.Profil {
     top: 10vh;
     left: 0;
     display: flex;
-    flex-direction:column;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+}
 
-}
-div.Profil #comm{
-    display:flex;
-        text-align:start;
-}
+    div.Profil #comm {
+        display: flex;
+        text-align: start;
+    }
 /*fin Profil*/
+/*simple*/
+div.simple {
+    height: 85vh;
+    width: 100vw;
+    position: fixed;
+    top: 10vh;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+    div.simple #commentaire {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        width: 15vw;
+        border: 1px solid black;
+        padding:1em;
+    }
+    div.simple .white {
+        background-color: rgb(255, 255, 255, 0.7);
+        border: 2px solid rgb(255, 255, 255);
+        border-radius: 10px;
+        margin-top: 10vh;
+    }
+
+/*fin simple*/

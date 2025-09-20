@@ -10,7 +10,8 @@ namespace WebApplication1.ViewModels
 
         public List<Jeux> ListJeux { get; set; } = new List<Jeux>();
 
-        String message = "";
+        public string? ErrorMessage { get; set; }
+
 
     }
 }

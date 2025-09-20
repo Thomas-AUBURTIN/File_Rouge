@@ -1,34 +1,37 @@
 ﻿@model ConnectionViewModel;
 @{
-	var Now = DateTime.Now;
-	var eye = $"js/eye.js?q={Now.Ticks}";
-	var slide = $"js/slide.js?q={Now.Ticks}";
 
 	ViewData["Title"] = "Login";
 }
 
 <div id="index">
-	<script src="@slide" defer></script>
-	<script src="@eye" defer></script>
+	<script src="~/js/slide.js" defer></script>
+	<script src="~/js/eye.js" defer></script>
 
 	<form id="se_loguer" asp-controller="Access" asp-action="SignIn" method="post">
 		<h1 class="fusion">Connection</h1>
+		@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+		{
+			<p class="text-danger">@Model.ErrorMessage</p>
+		}
 		<div class="start">
 			<div>
-
 				<label asp-for="@Model.Utilisateur.pseudo">Pseudo :</label>
 				<input asp-for="@Model.Utilisateur.pseudo" />
+				<span asp-validation-for="@Model.Utilisateur.pseudo" class="text-danger"></span>
 				<br>
 			</div>
 
 			<div class="div-eye">
 				<label asp-for="@Model.Utilisateur.motdePasse">Mot de passe : </label>
 				<input asp-for="@Model.Utilisateur.motdePasse" />
+				<span asp-validation-for="@Model.Utilisateur.motdePasse" class="text-danger"></span>
 				<img src="./img/site/oeil.png" alt="" id="eye">
 			</div>
 		</div>
 
 		<hr>
+
 		@if (User?.Identity?.IsAuthenticated == false)
 			@if (User?.Identity != null && !User.Identity.IsAuthenticated)
 			{
@@ -36,18 +39,19 @@
 			}
 
 		<input type="submit">
+
+
 	</form>
-	@{
-		<p style="red bold ">@ViewData["ValidateMessage"]</p>
-	}
-	<aside id="top">
+
+
+	<aside class="white" id="top">
 		<h2>jeu au top</h2>
-		<div class="white container-slide">
+		
 			@foreach (var jeux in @Model.ListJeux!)
 			{
 				<img class="slides" src="@(jeux.image)">
 			}
-		</div>
+		
 		<button class="fleche-gauche" onclick="plusSlides(-1)">&#10094;</button>
 		<button class="fleche-droite" onclick="plusSlides(+1)">&#10095;</button>
 		<div style="text-align:center">
