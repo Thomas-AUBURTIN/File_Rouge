@@ -120,7 +120,7 @@ namespace WebApplication1.Controllers
                     // Préparation et envoi d'un email de vérification
                     UriBuilder uriBuilder = new UriBuilder();
                     uriBuilder.Port = 5248;
-                    uriBuilder.Path = "/Access/Verifyemailpage";
+                    uriBuilder.Path = "/Access/VerifyEmail";
                     uriBuilder.Query = $"email={HttpUtility.UrlEncode(utilisateur.email)}&token={HttpUtility.UrlEncode(token)}";
 
                     MailMessage mail = new MailMessage
@@ -150,7 +150,7 @@ namespace WebApplication1.Controllers
             }
         }
 
-
+        [HttpGet]
         public IActionResult VerifyEmail([FromQuery] string email, [FromQuery] string token)
         {
             // TODO vérifier qu'on recoit bien des truc
@@ -169,7 +169,7 @@ namespace WebApplication1.Controllers
                     else
                     {
                         ViewData["ValidateMessage"] = "Email vérifié, vous pouvez maintenant vous connecter.";
-                        return RedirectToAction("Index", "Verifyemailpage");
+                        return RedirectToAction("Verifyemailpage", "Access");
                     }
                 }
             }

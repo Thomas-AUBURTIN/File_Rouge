@@ -641,7 +641,7 @@ namespace WebApplication1.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin")]
 
-        public IActionResult Supprimer([FromQuery] int id, [FromForm] int idJeu)
+        public IActionResult Supprimer(int id,  int idJeu)
         {
             if (id != idJeu)
             {
@@ -723,14 +723,14 @@ namespace WebApplication1.Controllers
         {
             EditeurCommentaireViewModel editer = new() { Action = "EnvoyerCommentaire", Titre = "Modification jeu", Commentaire = new Commentaire() };
 
-            ViewData["jeuid"] = id;
+            editer.Commentaire.jeuId = id;
 
 
             // Récupération de l'ID de l'utilisateur à partir du token
             var user = HttpContext.User;
             string? userId = user?.Claims?.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
-            ViewData["utilisateurid"] = int.Parse(userId);
+            editer.Commentaire.utilisateurId = int.Parse(userId);
 
 
 
@@ -793,28 +793,49 @@ namespace WebApplication1.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult SupprimerCommentaire([FromRoute] int id, [FromRoute] int jeuid)
+        public IActionResult SupprimerCommentaire(int id, int jeuid)
         {
-            string querySupprimercomm = "DELETE FROM commentaires WHERE jeuid=@jeuid and utilisateurid=@id;";
-            string queryNombresThemes = "SELECT count(*) FROM commentaires WHERE jeuid=@jeuid and utilisateurid=@id;";
+            string querySupprimercomm = "DELETE FROM commentaires WHERE jeuid=@jeuId AND utilisateurid=@utilisateurId;";
+            string queryNombresCommentaires = "SELECT count(*) FROM commentaires WHERE jeuid=@jeuId AND utilisateurid=@utilisateurId;";
+
             using (var connexion = new NpgsqlConnection(_connexionString))
             {
                 connexion.Open();
                 using (var transaction = connexion.BeginTransaction())
                 {
-                    // Supprime les liens thèmes
-                    int nbcomm = connexion.ExecuteScalar<int>(queryNombresThemes, new { id = id, jeuid = jeuid });
-                    int res = connexion.Execute(querySupprimercomm = "DELETE FROM commentaires WHERE jeuid=@jeuid and utilisateurid=@id;"
-, new { id = id });
-                    if (res != nbcomm)
+                    try
+                    {
+                        // Vérifie le nombre de commentaires correspondant
+                        int nbCommentaires = connexion.ExecuteScalar<int>(queryNombresCommentaires, new
+                        {
+                            jeuId = jeuid,
+                            utilisateurId = id
+                        });
+
+                        // Supprime le commentaire
+                        int res = connexion.Execute(querySupprimercomm, new
+                        {
+                            jeuId = jeuid,
+                            utilisateurId = id
+                        });
+
+                        if (res != nbCommentaires)
+                        {
+                            transaction.Rollback();
+                            TempData["ValidateMessage"] = "Erreur lors de la suppression du commentaire.";
+                            return RedirectToAction("Detail", new { id = jeuid });
+                        }
+
+                        transaction.Commit();
+                        TempData["ValidateMessage"] = "Commentaire supprimé avec succès.";
+                        return RedirectToAction("Detail", new { id = jeuid });
+                    }
+                    catch (Exception)
                     {
                         transaction.Rollback();
-
-                        return RedirectToAction("Detail", jeuid);
+                        TempData["ValidateMessage"] = "Une erreur est survenue lors de la suppression.";
+                        return RedirectToAction("Detail", new { id = jeuid });
                     }
-                    return RedirectToAction("Detail", jeuid);
-
-
                 }
             }
         }

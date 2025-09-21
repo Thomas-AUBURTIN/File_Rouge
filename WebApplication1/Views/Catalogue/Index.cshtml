@@ -74,10 +74,10 @@
 							<a asp-controller="Catalogue" asp-action="Editer" asp-route-id=@Model.ListJeux[i].jeuid>éditer</a>
 
 
-
-							<form class="formSupprJeux" asp-controller="Catalogue" asp-action=supprimer asp-route-id="@(Model.ListJeux[i].jeuid)" method="post">
+						
+							<form class="formSupprJeux" asp-controller="Catalogue" asp-action="Supprimer" asp-route-id="@(Model.ListJeux[i].jeuid)" method="post">
 								<input type="submit" value="Supprimer">
-								<input type="hidden" asp-for="@Model.ListJeux[i].jeuid" name="idJeu">
+								<input type="hidden" name="idJeu" value="@Model.ListJeux[i].jeuid">
 							</form>
 						}
 					</div>
@@ -90,6 +90,10 @@
 
 	</div>
 </div>
+
+
+
+
 
 
 
