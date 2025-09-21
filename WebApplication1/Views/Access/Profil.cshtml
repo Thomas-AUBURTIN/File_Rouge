@@ -25,9 +25,11 @@
 					@commentaire.note
 				</p>
 				<p>@commentaire.datecommentaires</p>
-				<a asp-controller="Catalogue" asp-action="SupprimerCommentaire" asp-route-id="@commentaire.utilisateurId" asp-route-jeuid="@commentaire.jeuId">
-					supprimer
-				</a>
+				<form asp-controller="Catalogue" asp-action="SupprimerCommentaire" method="post">
+					<input type="hidden" name="id" value="@commentaire.utilisateurId" />
+					<input type="hidden" name="jeuid" value="@commentaire.jeuId" />
+					<button type="submit">Supprimer</button>
+				</form>
 				<a asp-controller="Catalogue" asp-action="EditerCommentaire" asp-route-id="@commentaire.utilisateurId" asp-route-jeuid="@commentaire.jeuId">
 					editer
 				</a>

@@ -50,7 +50,7 @@
 <form asp-controller="Catalogue" asp-action="SupprimerCommentaire" method="post">
     <input type="hidden" name="id" value="@comm.utilisateurId" />
     <input type="hidden" name="jeuid" value="@Model.jeuid" />
-    <button type="submit" class="btn btn-danger">Supprimer</button>
+    <button type="submit" >Supprimer</button>
 </form>
 					<a asp-controller="Catalogue" asp-action="EditerCommentaire" asp-route-id="@comm.utilisateurId" asp-route-jeuid="@Model.jeuid">
 						editer
